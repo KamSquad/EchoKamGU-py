@@ -108,3 +108,6 @@ venv.bak/
 *.bat
 activate.bat
 *.code-workspace
+
+kivy/
+lin-venv/
