@@ -3,8 +3,11 @@ from kivy.properties import StringProperty, BooleanProperty
 from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.screenmanager import Screen
 
-from kivymd.app import MDApp
+from app import MDApp
 from kivymd.theming import ThemableBehavior
+from kivy.factory import Factory
+
+Factory.register("MDBackdrop", module="backdrop")
 
 # Your layouts.
 Builder.load_string(
@@ -256,5 +259,6 @@ class Test(MDApp):
 
     def build(self):
         return ExampleBackdrop()
+
 
 Test().run()
