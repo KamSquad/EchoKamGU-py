@@ -112,3 +112,6 @@ activate.bat
 
 ## Pycharm stuff
 .idea/
+
+## kivyMD demos
+demos/
