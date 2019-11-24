@@ -10,11 +10,6 @@ from kivy.uix.popup import Popup
 Window.size = (480, 853)
 
 class Container(BoxLayout):
-    layout = BoxLayout(spacing=10)
-    btn1 = Button(text='Hello', size_hint=(.7, 1))
-    btn2 = Button(text='World', size_hint=(.3, 1))
-    layout.add_widget(btn1)
-    layout.add_widget(btn2)
     pass
 
 

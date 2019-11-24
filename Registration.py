@@ -1,6 +1,7 @@
 import os
 
-from kivy.app import App
+from kivymd.app import MDApp
+#from kivymd.app import App
 from kivy.lang import Builder
 from kivy.factory import Factory
 from kivy.core.window import Window
@@ -17,10 +18,10 @@ Builder.load_string("""
         Rectangle:
             pos: self.pos
             size: self.size
-            source: 'demos/kitchen_sink/assets/crop-blur.jpg'
+            source: 'C:\\Users\\Админ\\PycharmProjects\\untitled1\\Exo\\er2227788158.jpg'
 
     Image:
-        source: 'demos/kitchen_sink/assets/twitter-red.png'
+        source: 'C:\\Users\\Админ\\PycharmProjects\\untitled1\\Exo\\er2227788158.jpg'
         size_hint: None, None
         size: dp(60), dp(60)
         pos_hint: {'center_x': .5}
@@ -65,7 +66,7 @@ Builder.load_string("""
 """)
 
 
-class Example(App):
+class Example(MDApp):
     theme_cls = ThemeManager()
     theme_cls.primary_palette = 'Red'
     title = "Example MDTextFieldRect"
@@ -74,9 +75,9 @@ class Example(App):
     def __init__(self, **kwargs):
         super(Example, self).__init__(**kwargs)
         path_to_crop_image = \
-            '{}/demos/kitchen_sink/assets/crop-blur.jpg'.format(self.directory)
+            'er2227788158.jpg'.format(self.directory)
         path_to_origin_image = \
-            '{}/demos/kitchen_sink/assets/blur.jpg'.format(self.directory)
+            'er2227788158.jpg'.format(self.directory)
 
         if not os.path.exists(path_to_crop_image):
             crop_image((Window.width, Window.height),
@@ -86,6 +87,7 @@ class Example(App):
     def build(self):
         self.main_widget = Factory.ExampleMDTextFieldRect()
         return self.main_widget
+
 
 if __name__ == "__main__":
     Example().run()
