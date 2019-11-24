@@ -1,5 +1,5 @@
-
-
+#:import BoxLayout kivy.uix.boxlayout
+#:import Popup kivy.uix.popup
 <Container>:
     rows:4
     #padding:50
@@ -19,5 +19,15 @@
             #disabled: True
             bg_color: (0,0,0,0)# root.parent.parent.primary_color if root.parent else (0,0,0,1)
             #color: root.parent.parent.secondary_color if root.parent else (0,0,0,1)
-
-
+        TextInput:
+            id: pochta
+            size_hint: (None, None)
+            size: (200, 50)
+            pos_hint: {"right": .7, "center_y": 0.9}
+            hint_text: 'address'
+        TextInput:
+            id: password
+            size_hint: (None, None)
+            size: (200, 50)
+            pos_hint: {"right": .7, "center_y": 0.8}
+            hint_text: 'password'
