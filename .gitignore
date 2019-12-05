@@ -114,4 +114,4 @@ activate.bat
 .idea/
 
 ## kivyMD demos
-demos/
+/demos_kivyMD/

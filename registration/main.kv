@@ -1,33 +1,38 @@
 #:import BoxLayout kivy.uix.boxlayout
 #:import Popup kivy.uix.popup
-<Container>:
-    rows:4
-    #padding:50
-#ScreenManager:
-    canvas.before:
-        Rectangle:
-            size: self.size
-            pos: self.pos
-            source: "pic/1534144470_sobaka-rab-stol.jpg" # эта хрень работает!
-    Screen:
-        Button:
-            #id: sign_in_button
-            text: "Reg"
-            size_hint: .2 ,.05
-            pos_hint: {"right": .85, "center_y": .1}
-            #opacity: 0
-            #disabled: True
-            bg_color: (0,0,0,0)# root.parent.parent.primary_color if root.parent else (0,0,0,1)
-            #color: root.parent.parent.secondary_color if root.parent else (0,0,0,1)
-        TextInput:
-            id: pochta
-            size_hint: (None, None)
-            size: (200, 50)
-            pos_hint: {"right": .7, "center_y": 0.9}
-            hint_text: 'address'
-        TextInput:
-            id: password
-            size_hint: (None, None)
-            size: (200, 50)
-            pos_hint: {"right": .7, "center_y": 0.8}
-            hint_text: 'password'
+
+
+<RegistrationScreen@Screen>:
+    main_manager: self.main_manager
+
+    Button:
+        #id: sign_in_button
+        text: "Reg"
+        size_hint: .2 ,.05
+        pos_hint: {"right": .85, "center_y": .1}
+        #opacity: 0
+        #disabled: True
+        bg_color: (0,0,0,0)# root.parent.parent.primary_color if root.parent else (0,0,0,1)
+        #color: root.parent.parent.secondary_color if root.parent else (0,0,0,1)
+
+    Button:
+        text: "letmein"
+        size_hint: .2 ,.05
+        pos_hint: {"right": .25, "center_y": .1}
+        bg_color: (0,0,0,0)
+        on_press:
+            root.main_manager.current = "news"
+
+    TextInput:
+        id: pochta
+        size_hint: (None, None)
+        size: (200, 50)
+        pos_hint: {"right": .7, "center_y": 0.9}
+        hint_text: 'address'
+
+    TextInput:
+        id: password
+        size_hint: (None, None)
+        size: (200, 50)
+        pos_hint: {"right": .7, "center_y": 0.8}
+        hint_text: 'password'

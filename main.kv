@@ -1,41 +1,17 @@
-<FirstRunWindow>:
-    Screen:
-        Carousel:
-            direction: 'right'
-            AsyncImage:
-                source: "data/pics/kamgu_logo.png"
-            AsyncImage:
-                source: "data/pics/kamgu_logo.png"
-            AsyncImage:
-                source: "data/pics/kamgu_logo.png"
-            AsyncImage:
-                source: "data/pics/kamgu_logo.png"
-        Button:
-            id: first_start_button
-            text: "Start"
-            size_hint: .2 ,.05
-            pos_hint: {"right": .6, "center_y": .055}
-            bg_color: (0,0,0,1)# root.parent.parent.primary_color if root.parent else (0,0,1,1)
-            on_press:
-                root.manager.screen = 'Second'
+<MainScreenManager@ScreenManager>
+    transition: NoTransition()
 
-<Second>:
-    rows:4
     Screen:
-        Button:
-            text: "Reg"
-            size_hint: .2 ,.05
-            pos_hint: {"right": .85, "center_y": .1}
-            bg_color: (0,0,0,0)# root.parent.parent.primary_color if root.parent else (0,0,0,1)
-        TextInput:
-            id: pochta
-            size_hint: (None, None)
-            size: (200, 50)
-            pos_hint: {"right": .7, "center_y": 0.9}
-            hint_text: 'address'
-        TextInput:
-            id: parol
-            size_hint: (None, None)
-            size: (200, 50)
-            pos_hint: {"right": .7, "center_y": 0.8}
-            hint_text: 'password'
+        name: "greetings"
+        GreetingsScreen:
+            main_manager: root
+
+    Screen:
+        name: "news"
+        MainBackdrop:
+            main_manager: root
+
+    Screen:
+        name: "registration"
+        RegistrationScreen:
+            main_manager: root

@@ -1,0 +1,32 @@
+#:import Carousel kivy.uix.carousel
+
+
+<GreetingsScreen@Screen>:
+    main_manager: self.main_manager
+
+    Screen:
+        Carousel:
+            direction: 'right'
+            AsyncImage:
+                source: "data/pics/kamgu_logo.png"
+            AsyncImage:
+                source: "data/pics/kamgu_logo.png"
+            AsyncImage:
+                source: "data/pics/kamgu_logo.png"
+            AsyncImage:
+                source: "data/pics/kamgu_logo.png"
+
+        Button:
+            id: sign_in_button
+            text: "regatron"
+            size_hint: .2 ,.05
+            pos_hint: {"right": .6, "center_y": .055}
+            bg_color: (0,0,0,1)# root.parent.parent.primary_color if root.parent else (0,0,1,1)
+
+        Button:
+            text: "пустиминя"
+            size_hint: .2 ,.05
+            pos_hint: {"right": .2, "center_y": .055}
+            bg_color: (0,0,0,1)
+            on_press:
+                root.main_manager.current = "registration"
