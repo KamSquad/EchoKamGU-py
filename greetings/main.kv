@@ -2,31 +2,37 @@
 
 
 <GreetingsScreen@Screen>:
-    main_manager: self.main_manager
+    Carousel:
+        direction: 'right'
+        AsyncImage:
+            source: "data/pics/kamgu_logo.png"
+        AsyncImage:
+            source: "data/pics/kamgu_logo.png"
+        AsyncImage:
+            source: "data/pics/kamgu_logo.png"
+        AsyncImage:
+            source: "data/pics/kamgu_logo.png"
 
-    Screen:
-        Carousel:
-            direction: 'right'
-            AsyncImage:
-                source: "data/pics/kamgu_logo.png"
-            AsyncImage:
-                source: "data/pics/kamgu_logo.png"
-            AsyncImage:
-                source: "data/pics/kamgu_logo.png"
-            AsyncImage:
-                source: "data/pics/kamgu_logo.png"
+#    MDRaisedButton:
+#        id: sign_in_button
+#        text: "Регистрация"
+#        size_hint: .2 ,.05
+#        pos_hint: {"right": .95, "center_y": .05}
+#        bg_color: (0,0,0,1)# root.parent.parent.primary_color if root.parent else (0,0,1,1)
 
-        Button:
-            id: sign_in_button
-            text: "regatron"
-            size_hint: .2 ,.05
-            pos_hint: {"right": .6, "center_y": .055}
-            bg_color: (0,0,0,1)# root.parent.parent.primary_color if root.parent else (0,0,1,1)
+    MDRaisedButton:
+        id: log_in_button
+        text: "Вход"
+        size_hint: .3 ,.05
+        pos_hint: {"right": .95, "center_y": .15}
+        bg_color: (0,0,0,1)# root.parent.parent.primary_color if root.parent else (0,0,1,1)
+        on_press:
+            root.main_manager.current = "login"
 
-        Button:
-            text: "пустиминя"
-            size_hint: .2 ,.05
-            pos_hint: {"right": .2, "center_y": .055}
-            bg_color: (0,0,0,1)
-            on_press:
-                root.main_manager.current = "registration"
+#    MDRaisedButton:
+#        text: "пустиминя"
+#        size_hint: .2 ,.05
+#        pos_hint: {"right": .2, "center_y": .055}
+#        bg_color: (0,0,0,1)
+#        on_press:
+#            root.main_manager.current = "registration"

@@ -1,6 +1,7 @@
 #:import NoTransition kivy.uix.screenmanager.NoTransition
 #:import Window kivy.core.window.Window
 #:import IconLeftWidget kivymd.uix.list.IconLeftWidget
+#:import Labek kivy.uix.label
 
 
 <ItemBackdropFrontLayer@TwoLineAvatarListItem>
@@ -71,57 +72,71 @@
 
 
 <MainBackdropFrontLayer@ScreenManager>
+    id: frontlayer
     transition: NoTransition()
     backdrop: None
     on_kv_post: root.on_open()
+    size_hint: 1, 1
 
     Screen:
-        name: "screen one"
+        name: "news_cards"
 
-        ScrollView
+        ScrollView:
+            size_hint: 1, 1
+            do_scroll_x: False
 
             GridLayout:
                 id: grid_card
                 cols: 1
                 spacing: dp(5)
                 padding: dp(5)
+                #row_force_default: True
+                #row_default_height: 350
+                #foo: [self.rows_minimum.update({i: x.height}) for i, x in enumerate(reversed(list(self.children)))]
                 size_hint_y: None
                 height: self.minimum_height
 
     Screen:
-        name: "screen two"
+        name: "full_text"
+
+        ScrollView
+
+            GridLayout:
+                id: grid_full
+                cols: 1
+                spacing: dp(5)
+                padding: dp(5)
+                height: self.minimum_height
 
 
 <MainBackdropBackLayer@BoxLayout>
     backdrop: None
-    frontlayer: None
 
     GridLayout:
         size_hint_y: None
-        height: self.minimum_height
+        height: 500
         cols: 1
-        padding: "5dp"
+        padding: "1dp"
 
         ItemBackdropFrontLayer:
-            text: "Press item"
+            text: "News cards"
             icon: "monitor-star"
             on_press:
-                root.frontlayer.current = "screen one"
+                root.frontlayer.current = "news_cards"
                 root.backdrop.close()
                 root.frontlayer.on_open()
 
         ItemBackdropFrontLayer:
-            text: "Press item"
+            text: "add"
             icon: "arrange-send-backward"
             on_press:
-                root.frontlayer.current = "screen two"
-                root.backdrop.close()
+                root.frontlayer.add_news()
 
         ItemBackdropFrontLayer:
             text: "Reg"
             icon: "arrange-send-backward"
             on_press:
-                root.backdrop.main_manager.current = "registration"
+                root.backdrop.main_manager.current = "login"
                 root.backdrop.close()
 
         ItemBackdropFrontLayer:
