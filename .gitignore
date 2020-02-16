@@ -30,6 +30,7 @@ MANIFEST
 #  before PyInstaller builds the exe, so as to inject date/other infos into it.
 *.manifest
 *.spec
+!buildozer.spec
 
 # Installer logs
 pip-log.txt
@@ -108,3 +109,9 @@ venv.bak/
 *.bat
 activate.bat
 *.code-workspace
+
+## Pycharm stuff
+.idea/
+
+## kivyMD demos
+/demos_kivyMD/

@@ -1,0 +1,169 @@
+#:import NoTransition kivy.uix.screenmanager.NoTransition
+#:import Window kivy.core.window.Window
+#:import IconLeftWidget kivymd.uix.list.IconLeftWidget
+#:import Labek kivy.uix.label
+
+
+<ItemBackdropFrontLayer@TwoLineAvatarListItem>
+    icon: "android"
+
+    IconLeftWidget:
+        icon: root.icon
+
+
+<ItemBackdropBackLayer>
+    size_hint_y: None
+    height: self.minimum_height
+    spacing: "10dp"
+
+    canvas:
+        Color:
+            rgba:
+                root.theme_cls.primary_dark if root.selected_item \
+                else root.theme_cls.primary_color
+        RoundedRectangle:
+            pos: self.pos
+            size: self.size
+
+    MDIconButton:
+        icon: root.icon
+        theme_text_color: "Custom"
+        text_color: 1, 1, 1, .5 if not root.selected_item else 1, 1, 1, 1
+
+    MDLabel:
+        text: root.text
+        color: 1, 1, 1, .5 if not root.selected_item else 1, 1, 1, 1
+
+
+<ItemBackdropBackLayerOfSecondScreen@BoxLayout>
+    size_hint_y: None
+    height: "40dp"
+    spacing: "25dp"
+    text: ""
+
+    MDCheckbox:
+        size_hint: None, None
+        size: "30dp", "30dp"
+        active: False or self.active
+        pos_hint: {"center_y": .5}
+        selected_color: 1, 1, 1, 1
+
+    MDLabel:
+        text: root.text
+        color: 1, 1, 1, .7
+
+
+<ItemRoundBackdropBackLayerOfSecondScreen@BoxLayout>
+    size_hint_y: None
+    height: "40dp"
+    spacing: "25dp"
+    text: ""
+
+    MDCheckbox:
+        group: "size"
+        size_hint: None, None
+        size: "30dp", "30dp"
+        pos_hint: {"center_y": .5}
+        selected_color: 1, 1, 1, 1
+
+    MDLabel:
+        text: root.text
+        color: 1, 1, 1, .7
+
+
+<MainBackdropFrontLayer@ScreenManager>
+    id: frontlayer
+    transition: NoTransition()
+    backdrop: None
+    on_kv_post: root.on_open()
+    size_hint: 1, 1
+
+    Screen:
+        name: "news_cards"
+
+        ScrollView:
+            size_hint: 1, 1
+            do_scroll_x: False
+
+            GridLayout:
+                id: grid_card
+                cols: 1
+                spacing: dp(5)
+                padding: dp(5)
+                #row_force_default: True
+                #row_default_height: 350
+                #foo: [self.rows_minimum.update({i: x.height}) for i, x in enumerate(reversed(list(self.children)))]
+                size_hint_y: None
+                height: self.minimum_height
+
+    Screen:
+        name: "full_text"
+
+        ScrollView
+
+            GridLayout:
+                id: grid_full
+                cols: 1
+                spacing: dp(5)
+                padding: dp(5)
+                height: self.minimum_height
+
+
+<MainBackdropBackLayer@BoxLayout>
+    backdrop: None
+
+    GridLayout:
+        size_hint_y: None
+        height: 500
+        cols: 1
+        padding: "1dp"
+
+        ItemBackdropFrontLayer:
+            text: "News cards"
+            icon: "monitor-star"
+            on_press:
+                root.frontlayer.current = "news_cards"
+                root.backdrop.close()
+                root.frontlayer.on_open()
+
+        ItemBackdropFrontLayer:
+            text: "add"
+            icon: "arrange-send-backward"
+            on_press:
+                root.frontlayer.add_news()
+
+        ItemBackdropFrontLayer:
+            text: "Reg"
+            icon: "arrange-send-backward"
+            on_press:
+                root.backdrop.main_manager.current = "login"
+                root.backdrop.close()
+
+        ItemBackdropFrontLayer:
+            text: "Greet"
+            icon: "arrange-send-backward"
+            on_press:
+                root.backdrop.main_manager.current = "greetings"
+                root.backdrop.close()
+
+
+<MainBackdrop@Screen>
+    main_manager: self.main_manager
+
+    MDBackdrop:
+        id: backdrop
+        name: "test2"
+        left_action_items: [['menu', lambda x: self.open()]]
+        title: "Example Backdrop"
+        header_text: ""
+        main_manager: root.main_manager
+
+        MDBackdropFrontLayer:
+            MainBackdropFrontLayer:
+                id: frontlayer
+                backdrop: backdrop
+
+        MDBackdropBackLayer:
+            MainBackdropBackLayer:
+                frontlayer: frontlayer
+                backdrop: backdrop

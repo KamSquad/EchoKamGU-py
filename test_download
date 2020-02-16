@@ -1,0 +1,10 @@
+import urllib3
+import shutil
+
+http = urllib3.PoolManager()
+url = 'http://80.211.50.225:4141/logo.png'
+
+with http.request('GET', url, preload_content=False) as resp, open('logo.png', 'wb') as out_file:
+    shutil.copyfileobj(resp, out_file)
+
+print('over')
