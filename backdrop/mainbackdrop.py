@@ -31,24 +31,20 @@ class MainBackdropFrontLayer(ScreenManager):
         news_cards.news_cards(self)
 
     def add_news(self):
-        # font_size = 8.5
-        #
-        # lines_num = ceil(len(text) * font_size / Window.size[0])
-        # print(lines_num, Window.size)
-        # text = "lines: {}, window: {}, font: {}\n{}".format(lines_num, Window.size, font_size, text)
-
         text = "Длинная текстовая новость №1 " * randint(10, 50)
+
+        # get element height
+        # if anyone can rewrite this, then please do
         l = Label(text=text)
         l.texture_update()
-        print(l.texture_size, l.text_size, l.font_size, Window.size[0], l.texture_size[0] / Window.size[0])
-        #text = "texture size: {}, font size: {}\n{}".format(l.texture_size, l.font_size, text)
+        height = (ceil(l.texture_size[0] / Window.size[0]) * l.texture_size[1]) + l.texture_size[1] * 4
+
         self.ids.grid_card.add_widget(
             CardPost(
                 path_to_avatar="data/pics/kamgu_logo.png",
                 name_data='KamGU\n01.01.2020',
                 text_post=text,
-                #size=(lines_num + 1) * ceil(font_size*2),
-                size=(ceil(l.texture_size[0] / Window.size[0]) * l.texture_size[1]) + l.texture_size[1] * 4,
+                size=height,
                 with_image=False))
 
 
