@@ -148,7 +148,3 @@ class MainApp(MDApp):
                 './love.png',
                 path_to_crop_image,
             )
-
-
-if __name__ == "__main__":
-    MainApp().run()

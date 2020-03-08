@@ -1,3 +1,5 @@
+#:import NoTransition kivy.uix.screenmanager.NoTransition
+
 <MainScreenManager@ScreenManager>
     transition: NoTransition()
 
@@ -7,11 +9,9 @@
             main_manager: root
 
     Screen:
-        name: "news"
-        MainBackdrop:
-            main_manager: root
-
-    Screen:
         name: "login"
         LogInScreen:
             main_manager: root
+
+    NewsScreen:
+        main_manager: root

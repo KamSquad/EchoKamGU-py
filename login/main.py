@@ -4,7 +4,6 @@ from kivy.uix.boxlayout import BoxLayout
 
 from app import MDApp
 from kivymd.toast import toast
-from kivymd.uix.textfield import MDTextFieldRound
 
 
 class LogInScreen(Screen):
@@ -13,7 +12,7 @@ class LogInScreen(Screen):
         password = self.ids.password.text
         if self.check_password(login, password):
             toast("you're in!")
-            self.main_manager.current = "news"
+            self.main_manager.current = "news_screen"
 
             app = MDApp.get_running_app()
             if login == "Luna":
@@ -31,8 +30,3 @@ class LogInScreen(Screen):
     def check_password(self, login, password):
         print(login, password)
         return True
-
-
-class Container(BoxLayout):
-    pass
-
