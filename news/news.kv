@@ -1,3 +1,33 @@
+#:import MDNavigationDrawer kivymd.uix.navigationdrawer
+
+<ItemDrawer>:
+    theme_text_color: "Custom"
+    on_release: self.parent.set_color_item(self)
+
+    IconLeftWidget:
+        id: icon
+        icon: root.icon
+        theme_text_color: "Custom"
+        text_color: root.text_color
+
+
+<ContentNavigationDrawer>:
+    orientation: "vertical"
+    padding: "8dp"
+    spacing: "8dp"
+
+    MDLabel:
+        text: "EchoKamGU"
+        font_style: "Button"
+        size_hint_y: None
+        height: self.texture_size[1]
+
+    ScrollView:
+
+        DrawerList:
+            id: md_list
+
+
 <ButtonForNews>
     text: self.text
     text_size: self.text_size
@@ -7,28 +37,34 @@
 <NewsScreen>
     name: "news_screen"
 
-    ScrollView:
-        size_hint: 1, 1
-        do_scroll_x: False
+    NavigationLayout:
 
-        GridLayout:
-            id: news_grid
-            cols: 1
-            spacing: dp(5)
-            padding: dp(5)
-            size_hint_y: None
-            height: self.minimum_height
+        ScreenManager:
 
-#            ButtonForNews
-#
-#            ButtonForNews
-#
-#            ButtonForNews
-#
-#            ButtonForNews
-#
-#            ButtonForNews
-#
-#            ButtonForNews
+            Screen:
 
+                BoxLayout:
+                    orientation: 'vertical'
 
+                    MDToolbar:
+                        title: "Navigation Drawer"
+                        elevation: 10
+                        left_action_items: [['menu', lambda x: nav_drawer.set_state('toggle')]]
+
+                    ScrollView:
+                        size_hint: 1, 1
+                        do_scroll_x: False
+
+                        GridLayout:
+                            id: news_grid
+                            cols: 1
+                            spacing: dp(5)
+                            padding: dp(5)
+                            size_hint_y: None
+                            height: self.minimum_height
+
+        MDNavigationDrawer:
+            id: nav_drawer
+
+            ContentNavigationDrawer:
+                id: content_drawer

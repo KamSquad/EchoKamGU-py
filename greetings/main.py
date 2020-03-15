@@ -8,7 +8,7 @@ from kivy.metrics import dp
 
 from kivymd.uix.card import MDCard
 from kivymd.utils.cropimage import crop_image
-from kivymd.uix.managerswiper import MDSwiperPagination
+from kivy.uix.carousel import Carousel
 
 IMAGE_PATH = '../data/pics/kamgu_logo.png'
 
