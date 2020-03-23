@@ -1,4 +1,8 @@
 #:import MDNavigationDrawer kivymd.uix.navigationdrawer
+#:import MDList kivymd.uix.list
+#:import MDLabel kivymd.uix.label
+#:import MDSeparator kivymd.uix.card
+#:import MDTextButton kivymd.uix.button
 
 <ItemDrawer>:
     theme_text_color: "Custom"
@@ -34,6 +38,37 @@
     size: self.texture_size
 
 
+<NewsCard>
+    orientation: "vertical"
+    size_hint_y: None
+    padding: "8dp"
+
+    Image:
+        id: news_image
+
+    MDLabel:
+        id: news_title
+        theme_text_color: "Primary"
+        size_hint_y: None
+
+    MDSeparator:
+        height: "1dp"
+
+    MDLabel:
+        id: news_text
+        padding: [15, 0]
+
+    MDSeparator:
+        id: bottom_sep
+        height: "1dp"
+
+    MDTextButton:
+        id: news_sub_button
+        text: "Записаться"
+        padding_x: "10dp"
+        padding_y: "5dp"
+
+
 <NewsScreen>
     name: "news_screen"
 
@@ -43,25 +78,23 @@
 
             Screen:
 
-                BoxLayout:
-                    orientation: 'vertical'
+                ScrollView:
+                    size_hint: 1, 1
+                    do_scroll_x: False
 
-                    MDToolbar:
-                        title: "Navigation Drawer"
-                        elevation: 10
-                        left_action_items: [['menu', lambda x: nav_drawer.set_state('toggle')]]
+                    MDList:
+                        id: news_grid
+                        cols: 1
+                        spacing: dp(5)
+                        padding: dp(5)
+                        size_hint_y: None
+                        height: self.minimum_height
 
-                    ScrollView:
-                        size_hint: 1, 1
-                        do_scroll_x: False
-
-                        GridLayout:
-                            id: news_grid
-                            cols: 1
-                            spacing: dp(5)
-                            padding: dp(5)
-                            size_hint_y: None
-                            height: self.minimum_height
+                MDToolbar:
+                    title: "Новости"
+                    pos_hint: {"top": 1}
+                    elevation: 10
+                    left_action_items: [['menu', lambda x: nav_drawer.set_state('toggle')]]
 
         MDNavigationDrawer:
             id: nav_drawer
