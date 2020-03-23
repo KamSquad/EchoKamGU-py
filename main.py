@@ -12,7 +12,8 @@ from news import news
 from login import main
 from greetings import main
 
-
+Window.minimum_height = 500
+Window.minimum_width = 500
 Config.set('graphics', 'resizable', 0)
 Window.fullsize = 'auto'
 Window.release_all_keyboards()
@@ -29,6 +30,8 @@ class MainScreenManager(ScreenManager):
 
 
 class MainApp(MDApp):
+
+
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         self.theme_cls.primary_palette = "Green"
