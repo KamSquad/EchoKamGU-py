@@ -1,6 +1,7 @@
 from kivy.uix.screenmanager import Screen
 from kivy.uix.gridlayout import GridLayout
 from kivy.uix.boxlayout import BoxLayout
+from kivy.uix.image import AsyncImage
 
 from app import MDApp
 from kivymd.toast import toast
@@ -28,5 +29,16 @@ class LogInScreen(Screen):
                 app.theme_cls.primary_palette = "DeepPurple"
 
     def check_password(self, login, password):
-        print(login, password)
-        return True
+        import libs.ztweaks as ztweaks
+        if ztweaks.GlobalVars().mem_mode:
+            from kivy.core.audio import SoundLoader
+            sound = SoundLoader.load("login/end.mp3")
+            sound.play()
+        else:
+            #  real mode
+            import libs.database as db
+            if db.LoginFunc(login, password):
+                return True
+            import kivymd.toast
+            toast('Welcome back')
+            return True
