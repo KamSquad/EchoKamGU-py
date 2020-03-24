@@ -10,7 +10,7 @@ from kivy.config import Config
 from app import MDApp
 from news import news
 from login import main
-from greetings import main
+from greetings import greetings
 
 Window.minimum_height = 500
 Window.minimum_width = 500
@@ -20,7 +20,7 @@ Window.release_all_keyboards()
 print(Window.size)
 
 
-for kvfile in ['main.kv', 'news/news.kv', 'login/main.kv', 'greetings/main.kv']:
+for kvfile in ['main.kv', 'news/news.kv', 'login/main.kv', 'greetings/greetings.kv']:
     with open(kvfile, encoding='utf8') as f:
         Builder.load_string(f.read())
 

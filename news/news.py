@@ -3,6 +3,7 @@ from kivy.core.window import Window
 from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.image import Image
 from kivy.properties import StringProperty
+from kivy.uix.popup import Popup
 
 from kivymd.uix.button import MDTextButton
 from kivymd.theming import ThemableBehavior
@@ -10,24 +11,51 @@ from kivymd.uix.list import OneLineIconListItem, MDList
 from kivymd.uix.navigationdrawer import MDNavigationDrawer
 from kivymd.uix.card import MDCard, MDSeparator
 from kivymd.uix.label import MDLabel
+from kivymd.uix.dialog import MDDialog
 
 from random import randint
 from math import ceil
 
 
+def get_texture_size(text):
+    label = MDLabel(text=text.replace('\n', ''))
+    label.text_size = [None, None]
+    label.texture_update()
+    return label.texture_size
+
+
+# в label текстура текста - длинная линия. эта функция разбивает текст на параграфы
+# и отдельно подсчитывает необходимую высоту для каждого. длина текстуры делится на количество
+# знаков в тексте и мы получаем среднюю длину символа. проходя по словам в пвраграфе,
+# функция засекает необходимость переноса на новую строку и увеличивает высоту
 def text_height(text, win_width):
+    # получаем среднюю длину символа и высоту шрифта
+    text_size = get_texture_size(text)
+    #print(text, text_size)
+    avg_width = text_size[0] / len(text)
+    line_height = text_size[1]
+
     height = 0
-    line_height = 0
+    line_count = 0
+
     paragraphs = text.split("\n")
     for par in paragraphs:
-        label = MDLabel(text=par)
-        label.text_size = [None, None]
-        label.texture_update()
-        if not line_height:
-            line_height = label.texture_size[1]
-        height += ceil(label.texture_size[0] / win_width) * ceil(label.texture_size[1] * 1.5)
-        print(par, label.texture_size, height)
-    return height + line_height * 2
+        par_size = get_texture_size(par)
+        par_width = 0
+
+        for word in par.split():
+            par_width += len(word) * avg_width + avg_width
+            if par_width > win_width - 46:
+                height += line_height
+                line_count += 1
+                par_width = len(word)
+
+        height += line_height
+        line_count += 1
+
+    print(text, line_count)
+    # у длинного текста проблемы с этим, поэтому для них побольше
+    return height + line_height * (2 if height < 100 else 4)
 
 
 class ContentNavigationDrawer(BoxLayout):
@@ -36,6 +64,13 @@ class ContentNavigationDrawer(BoxLayout):
 
 class ItemDrawer(OneLineIconListItem):
     icon = StringProperty()
+
+
+class NewsPopup(Popup):
+    def __init__(self, title, text):
+        super().__init__()
+        self.title = title
+        self.ids.popup_label.text = text
 
 
 class DrawerList(ThemableBehavior, MDList):
@@ -50,33 +85,28 @@ class DrawerList(ThemableBehavior, MDList):
         instance_item.text_color = self.theme_cls.primary_color
 
 
-class ButtonForNews(MDTextButton):
-    def __init__(self, text=""):
-        super().__init__()
-        if not text:
-            self.text = "Длинная текстовая новость №1 " * randint(10, 50)
-        self.text_size = (Window.size[0], None)
-
-
 class NewsCard(MDCard):
-    def __init__(self, text_text="", title_text="", image_text=""):
+    def __init__(self, short_text="", title_text="", image_text="", full_text=""):
         super().__init__()
 
         img_flag = False
-        # if randint(0, 1):
-        #     img = Image(source="data/pics/koshak_flat.png")
-        #     self.ids.news_image.source = "data/pics/koshak_flat.png"
-        #     img_flag = True
-        # else:
-        #     self.remove_widget(self.ids.news_image)
+        sub_flag = False
+        self.remove_widget(self.ids.bottom_sep)
+        self.remove_widget(self.ids.news_sub_button)
 
-        sub_flag = True
-        if True:
-            sub_flag = False
-            self.remove_widget(self.ids.bottom_sep)
-            self.remove_widget(self.ids.news_sub_button)
+        self.title = title_text
+        self.short_text = short_text
+        self.full_text = full_text
+        self.image_path = image_text
+        # self.dialog = MDDialog(
+        #     title=self.title,
+        #     size_hint=(.8, .8),
+        #     text=self.full_text,
+        #     text_button_ok='Назад'
+        # )
+        self.popup = NewsPopup(self.title, self.full_text)
 
-        if not text_text:
+        if not short_text:
             title = self.ids.news_title
             title.text = 'title'
             title.texture_update()
@@ -89,21 +119,25 @@ class NewsCard(MDCard):
 
         else:
             title = self.ids.news_title
-            title.text = title_text
-            title.height = text_height(title_text, Window.width) + 5
+            title.text = self.title
+            title.height = text_height(title_text, Window.width)
 
             text = self.ids.news_text
-            text.text = text_text
-            text.height = text_height(text_text, Window.width) + 10
+            text.text = self.short_text
+            text.height = text_height(self.short_text, Window.width)
 
-            img = Image(source=image_text)
-            self.ids.news_image.source = image_text
+            img = Image(source=self.image_path)
+            self.ids.news_image.source = self.image_path
             img_flag = True
 
         self.height = (title.height +
                        text.height +
                        (img.height if img_flag else 0) +
                        (self.ids.news_sub_button.height if sub_flag else 0))
+
+    def show_full(self):
+        print('debug')
+        self.popup.open()
 
 
 class NewsScreen(Screen):
@@ -117,16 +151,28 @@ class NewsScreen(Screen):
     def _get_news(self):
         return [["title",
                  "text",
+                 "",
                  "data/pics/koshak_flat.png"],
                 ["ПРОФИЛАКТИКА КОРОНАВИРУСНОЙ ИНФЕКЦИИ, ГРИППА И ДРУГИХ ОРВИ",
                  "Что нужно делать в период активной циркуляции возбудителей коронавирусной инфекции, гриппа и других "
                  "возбудителей острых респираторных вирусных инфекций (ОРВИ) для того, чтобы предотвратить "
                  "собственное заражение и обезопасить окружающих, если заболели вы?",
+                 "Что нужно делать в период активной циркуляции возбудителей коронавирусной инфекции, гриппа и других "
+                 "возбудителей острых респираторных вирусных инфекций (ОРВИ) для того, чтобы предотвратить "
+                 "собственное заражение и обезопасить окружающих, если заболели вы?\nВозбудители всех этих "
+                 "заболеваний высоко заразны и передаются преимущественно воздушно-капельным путем.\nПри чихании и "
+                 "кашле в воздухе вокруг больного человека распространяются микрокапли его слюны, мокроты и "
+                 "респираторных выделений, которые содержат вирусы. Более крупные капли оседают на окружающих "
+                 "предметах, и поверхностях, мелкие — долго находятся в воздухе и переносятся на расстояния до "
+                 "нескольких сот метров, при этом вирусы сохраняют способность к заражению от нескольких часов до "
+                 "нескольких дней. Основные меры гигиенической профилактики направлены на предотвращение контакта "
+                 "здоровых людей с содержащими вирусы частицами выделений больного человека.",
                  "data/pics/zastavka-virus.jpg"],
                 ["ПРЕДВАРИТЕЛЬНЫЕ РЕЗУЛЬТАТЫ ОЛИМПИАДЫ ПО ИНФОРМАТИКЕ «ВИТУС БЕРИНГ 2019»",
                  "21 декабря в ФГБОУ ВО «КамГУ им. Витуса Беринга» прошла олимпиада по информатике «Витус Беринг – "
                  "2019». В олимпиаде приняло участие 52 обучающихся 8-11 классов школ города "
                  "Петропавловска-Камчатского и города Елизово.",
+                 "",
                  "data/pics/fon-uni.png"],
                 ["НОВОГОДНИЙ ВЕЧЕР ФИЗИКО-МАТЕМАТИЧЕСКОГО ФАКУЛЬТЕТА!",
                  "Приглашаем вас принять участие в Новогоднем вечере физико-математического факультета!\nТолько у нас "
@@ -134,6 +180,7 @@ class NewsScreen(Screen):
                  "волшебство и справедливость.\nВас ждет куча сладостей, живая музыка и хорошее настроение.\nСпешите, "
                  "количество мест ограничено!\nГде? Когда? — актовый зал 2 корпуса, 24.12 в 18:00\nПодробности по "
                  "телефону: +7 996-034-24-89",
+                 "",
                  "data/pics/new_year.png"],
                 ["ОЛИМПИАДА ПО ИНФОРМАТИКЕ «ВИТУС БЕРИНГ- 2019»",
                  "21 декабря 2019 года на базе физико-математического факультета ФГБОУ ВО\n«КамГУ им. Витуса Беринга» "
@@ -142,6 +189,7 @@ class NewsScreen(Screen):
                  "а также популяризации информатики среди учащихся общеобразовательных школ Камчатского края.\nВ "
                  "олимпиаде могут принимать участие школьники 8-11 классов. Участие в олимпиаде свободное и "
                  "бесплатное.",
+                 "",
                  "data/pics/tv.png"]]
 
     def on_enter(self):
@@ -150,9 +198,10 @@ class NewsScreen(Screen):
 
         if self.news_list:
             for entry in self.news_list:
-                self.news_grid.add_widget(NewsCard(text_text=entry[1],
+                self.news_grid.add_widget(NewsCard(short_text=entry[1],
                                                    title_text=entry[0],
-                                                   image_text=entry[2]))
+                                                   full_text=entry[2],
+                                                   image_text=entry[3]))
         else:
             for _ in range(10):
                 self.news_grid.add_widget(NewsCard())

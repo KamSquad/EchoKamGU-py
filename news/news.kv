@@ -3,6 +3,27 @@
 #:import MDLabel kivymd.uix.label
 #:import MDSeparator kivymd.uix.card
 #:import MDTextButton kivymd.uix.button
+#:import MDRaisedButton kivymd.uix.button
+#:import MDRoundFlatButton kivymd.uix.button
+#:import MDDialog kivymd.uix.dialog
+#:import Popup kivy.uix.popup
+
+
+<NewsPopup>:
+    auto_dismiss: False
+    background: '/data/pics/white.png'
+    title_color: (0, 0, 0, 1)
+    size_hint: (.8, .8)
+
+    BoxLayout:
+
+        MDLabel:
+            id: popup_label
+
+        MDRaisedButton:
+            text: 'Назад'
+            on_press: root.dismiss()
+
 
 <ItemDrawer>:
     theme_text_color: "Custom"
@@ -31,11 +52,6 @@
         DrawerList:
             id: md_list
 
-
-<ButtonForNews>
-    text: self.text
-    text_size: self.text_size
-    size: self.texture_size
 
 
 <NewsCard>
@@ -67,6 +83,13 @@
         text: "Записаться"
         padding_x: "10dp"
         padding_y: "5dp"
+
+    MDRoundFlatButton:
+        id: news_show_all_button
+        text: "Открыть"
+        padding_x: "10dp"
+        padding_y: "5dp"
+        on_press: root.show_full()
 
 
 <NewsScreen>
