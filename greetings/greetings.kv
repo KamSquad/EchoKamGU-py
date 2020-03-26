@@ -1,0 +1,61 @@
+#:import MDRaisedButton kivymd.uix.button
+#:import MDLabel kivymd.uix.label
+#:import MDToolbar kivymd.uix.toolbar
+
+<MainWelcomeElement>:
+    orientation: "vertical"
+    main_manager: None
+    # \/\/\/ initialization of empty white box
+    canvas.before:
+        Color:
+            rgba: 1, 1, 1, 1
+        Rectangle:
+            pos: self.pos
+            size: self.size
+    # /\/\/\
+
+    BoxLayout:
+        orientation: 'vertical'
+        Carousel:
+            id: carousel_id
+            on_index: root.SlideChange(args[1]) #print("slide #{}".format(args[1]))
+            #size: root.width, root.height
+            direction: 'right'
+            AsyncImage:
+                source: "data/pics/kamgu_logo.png"
+            AsyncImage:
+                source: "data/pics/logo.png"
+            AsyncImage:
+                source: "data/pics/logo.png"
+            AsyncImage:
+                source: "data/pics/logo.png"
+            AsyncImage:
+                source: "data/pics/kamgu_logo.png"
+
+        MDLabel:
+            id: caption_text
+            text: "Добро пожаловать в приложение\nEchoKamGU!"
+            halign: "center"
+            size_hint: 1, None
+            #size: 1, 2
+
+        MDRaisedButton:
+            id: log_in_button
+            text: "Начать"
+            size_hint: .25 , 0.1
+            pos_hint: {"center_x": .5, "center_y": .2}
+            bg_color: (0,0,0,1)
+            on_press: root.greet_button() #carousel_id.load_next()
+                #root.main_manager.current = "login"
+
+        # empty box for space under button
+        BoxLayout:
+            orientation: 'vertical'
+            size_hint: 0.2, 0.09
+
+<GreetingsScreen>
+    id: greet_screen
+    main_manager: self.main_manager
+
+    MainWelcomeElement
+        main_manager: root.main_manager

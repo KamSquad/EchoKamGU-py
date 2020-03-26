@@ -1,38 +1,67 @@
 #:import BoxLayout kivy.uix.boxlayout
 #:import Popup kivy.uix.popup
-
+#:import AsyncImage kivy.uix.image
 
 <LogInScreen@Screen>:
     main_manager: self.main_manager
+    # \/\/\/ initialization of empty white box
+    canvas.before:
+        Color:
+            rgba: 1, 1, 1, 1
+        Rectangle:
+            pos: self.pos
+            size: self.size
+    # /\/\/\
 
-    MDRaisedButton:
-        #id: sign_in_button
-        text: "Войти"
-        size_hint: .3 ,.05
-        pos_hint: {"right": .95, "center_y": .15}
-        bg_color: (0,0,0,0)
-        on_press:
-            root.login_press() #root.login.text, root.password.text
+    BoxLayout:
+        orientation: 'vertical'
 
-    MDTextFieldRound:
-        id: login
-        size_hint: (.65, None)
-        size: (200, 50)
-        pos_hint: {"right": .7, "center_y": .9}
-        hint_text: 'login'
-        normal_color: [.5, 0, 1, .1]
-        foreground_color: [0, 0, 0, 1]
-        icon_left: 'account'
-        icon_type: 'left'
+        Image:
+            source: "data/pics/kamgu_logo.png"
+            size: 200, 200
 
-    MDTextFieldRound:
-        id: password
-        size_hint: (.65, None)
-        size: (200, 50)
-        pos_hint: {"right": .7, "center_y": 0.8}
-        hint_text: 'password'
-        normal_color: [0, 0, 1, .3]
-        password: True
-        foreground_color: [0, 0, 0, 1]
-        icon_left: 'account-key'
-        icon_type: 'left'
+        MDTextField:
+            id: login
+            mode: "rectangle"
+            size_hint: (.65, None)
+            size: (200, 50)
+            pos_hint: {"right": .82, "center_y": .9}
+            hint_text: 'Логин'
+            normal_color: [1, 1, 1, .4]
+            foreground_color: [0, 0, 0, 1]
+            color_active: [1, 1, 1, 1]
+            icon_left: 'account'
+            icon_type: 'left'
+
+        MDTextField:
+            id: password
+            mode: "rectangle"
+            size_hint: (.65, None)
+            size: (200, 50)
+            pos_hint: {"right": .82, "center_y": 0.8}
+            hint_text: 'Пароль'
+            normal_color: [1, 1, 1, .4]
+            foreground_color: [0, 0, 0, 1]
+            color_active: [1, 1, 1, 1]
+            password: True
+            icon_left: 'key-variant'
+            icon_type: 'left'
+
+        # empty box for space under
+        BoxLayout:
+            orientation: 'vertical'
+            size_hint: 0.2, 0.03
+
+        MDRaisedButton:
+            #id: sign_in_button
+            text: "Войти"
+            size_hint: .25 , 0.1
+            pos_hint: {"center_x": .5, "center_y": .2}
+            bg_color: (0,0,0,0)
+            on_press:
+                root.login_press() #root.login.text, root.password.text
+
+        # empty box for space under
+        BoxLayout:
+            orientation: 'vertical'
+            size_hint: 0.2, 0.2

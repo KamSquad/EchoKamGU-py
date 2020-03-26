@@ -1,0 +1,34 @@
+<ButtonForNews>
+    text: self.text
+    text_size: self.text_size
+    size: self.texture_size
+
+
+<NewsScreen>
+    name: "news_screen"
+
+    ScrollView:
+        size_hint: 1, 1
+        do_scroll_x: False
+
+        GridLayout:
+            id: news_grid
+            cols: 1
+            spacing: dp(5)
+            padding: dp(5)
+            size_hint_y: None
+            height: self.minimum_height
+
+#            ButtonForNews
+#
+#            ButtonForNews
+#
+#            ButtonForNews
+#
+#            ButtonForNews
+#
+#            ButtonForNews
+#
+#            ButtonForNews
+
+
