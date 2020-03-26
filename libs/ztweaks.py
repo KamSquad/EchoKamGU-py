@@ -32,6 +32,7 @@ def GetRemoteServerCredentials():
 
 class GlobalVars:
     debug_mode = False  # debug program's variable
+    meme_mode = False
     #  \/\/\/ SERVER CONFIG
     remote_server_ip = '80.211.50.225'
     remote_server_db = 'kamgu'

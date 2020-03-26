@@ -1,34 +1,126 @@
-<ButtonForNews>
-    text: self.text
-    text_size: self.text_size
-    size: self.texture_size
+#:import MDNavigationDrawer kivymd.uix.navigationdrawer
+#:import MDList kivymd.uix.list
+#:import MDLabel kivymd.uix.label
+#:import MDSeparator kivymd.uix.card
+#:import MDTextButton kivymd.uix.button
+#:import MDRaisedButton kivymd.uix.button
+#:import MDRoundFlatButton kivymd.uix.button
+#:import MDDialog kivymd.uix.dialog
+#:import Popup kivy.uix.popup
+
+
+<NewsPopup>:
+    auto_dismiss: False
+    background: '/data/pics/white.png'
+    title_color: (0, 0, 0, 1)
+    size_hint: (.8, .8)
+
+    BoxLayout:
+
+        MDLabel:
+            id: popup_label
+
+        MDRaisedButton:
+            text: 'Назад'
+            on_press: root.dismiss()
+
+
+<ItemDrawer>:
+    theme_text_color: "Custom"
+    on_release: self.parent.set_color_item(self)
+
+    IconLeftWidget:
+        id: icon
+        icon: root.icon
+        theme_text_color: "Custom"
+        text_color: root.text_color
+
+
+<ContentNavigationDrawer>:
+    orientation: "vertical"
+    padding: "8dp"
+    spacing: "8dp"
+
+    MDLabel:
+        text: "EchoKamGU"
+        font_style: "Button"
+        size_hint_y: None
+        height: self.texture_size[1]
+
+    ScrollView:
+
+        DrawerList:
+            id: md_list
+
+
+
+<NewsCard>
+    orientation: "vertical"
+    size_hint_y: None
+    padding: "8dp"
+
+    Image:
+        id: news_image
+
+    MDLabel:
+        id: news_title
+        theme_text_color: "Primary"
+        size_hint_y: None
+
+    MDSeparator:
+        height: "1dp"
+
+    MDLabel:
+        id: news_text
+        padding: [15, 0]
+
+    MDSeparator:
+        id: bottom_sep
+        height: "1dp"
+
+    MDTextButton:
+        id: news_sub_button
+        text: "Записаться"
+        padding_x: "10dp"
+        padding_y: "5dp"
+
+    MDRoundFlatButton:
+        id: news_show_all_button
+        text: "Открыть"
+        padding_x: "10dp"
+        padding_y: "5dp"
+        on_press: root.show_full()
 
 
 <NewsScreen>
     name: "news_screen"
 
-    ScrollView:
-        size_hint: 1, 1
-        do_scroll_x: False
+    NavigationLayout:
 
-        GridLayout:
-            id: news_grid
-            cols: 1
-            spacing: dp(5)
-            padding: dp(5)
-            size_hint_y: None
-            height: self.minimum_height
+        ScreenManager:
 
-#            ButtonForNews
-#
-#            ButtonForNews
-#
-#            ButtonForNews
-#
-#            ButtonForNews
-#
-#            ButtonForNews
-#
-#            ButtonForNews
+            Screen:
 
+                ScrollView:
+                    size_hint: 1, 1
+                    do_scroll_x: False
 
+                    MDList:
+                        id: news_grid
+                        cols: 1
+                        spacing: dp(5)
+                        padding: dp(5)
+                        size_hint_y: None
+                        height: self.minimum_height
+
+                MDToolbar:
+                    title: "Новости"
+                    pos_hint: {"top": 1}
+                    elevation: 10
+                    left_action_items: [['menu', lambda x: nav_drawer.set_state('toggle')]]
+
+        MDNavigationDrawer:
+            id: nav_drawer
+
+            ContentNavigationDrawer:
+                id: content_drawer

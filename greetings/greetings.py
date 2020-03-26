@@ -8,7 +8,6 @@ from kivy.metrics import dp
 
 from kivymd.uix.card import MDCard
 from kivymd.utils.cropimage import crop_image
-from kivymd.uix.managerswiper import MDSwiperPagination
 from kivymd.uix.button import MDRaisedButton
 from kivy.uix.carousel import Carousel
 from kivy.uix.image import AsyncImage
@@ -51,7 +50,7 @@ class MainWelcomeElement(Screen):
         else:
             self.main_manager.current = "login"
 
-    def SlideChange(self, slide_number):
+    def slide_change(self, slide_number):
         self.slide_number = slide_number
         if slide_number == 0:
             self.ids.caption_text.text = 'Добро пожаловать в приложение\nEchoKamGU!'
@@ -68,7 +67,6 @@ class MainWelcomeElement(Screen):
         if slide_number == 4:
             self.ids.caption_text.text = ''
             self.ids.log_in_button.text = 'Войти'
-        #self.parent.current = str(slide_number)
 
 
 class GreetCard(MDCard):
