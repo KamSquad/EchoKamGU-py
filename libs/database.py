@@ -45,17 +45,23 @@ class LocalDB:
         self.db_cursor.executescript(ztweaks.GlobalVars().local_db_InitScript())
         self.db_connection.commit()  # save changes
 
-    def local_bd_is_empty(self):
+    def local_db_is_empty(self):
         tables = ['config', 'news', 'media', 'settings']
         for table in tables:
             if not self.db_cursor.execute('SELECT COUNT(*) FROM ' + table).fetchone():
                 return True
 
-    def local_db_firstapp_start(self):
-        return bool(int(self.db_cursor.execute('SELECT value FROM config WHERE id_key="first_run"').fetchone()[0]))
+    def check_startscreen(self):
+        return int(self.db_cursor.execute('SELECT value FROM config WHERE id_key="first_run"').fetchone()[0])
 
-    def local_db_firstapp_start_disable(self):
-        self.db_cursor.executescript('UPDATE config SET value="0" WHERE id_key="first_run"')
+    def set_startscreen(self, value):
+        """
+        0 - greetings
+        1 - login
+        2 - news
+        :param value: on what to switch start screen
+        """
+        self.db_cursor.executescript('UPDATE config SET value="'+str(value)+'" WHERE id_key="first_run"')
         self.db_connection.commit()  # save changes
 
     def __init__(self):
@@ -66,7 +72,7 @@ class LocalDB:
             # print(ztweaks.ReturnLocalDBPath())
             self.db_connection = sqlite3.connect(ztweaks.ReturnLocalDBPath())
             self.db_cursor = self.db_connection.cursor()
-            if LocalDB.local_bd_is_empty(self):
+            if LocalDB.local_db_is_empty(self):
                 LocalDB.init_empty_db(self)
         except Exception as ex:
             print('[!] Error:\t' + str(ex))
@@ -92,14 +98,10 @@ def GetNewsByUser(user='student', password='kamgustudent'):
 
 
 def LoginFunc(login, password):
-    from kivymd.toast.kivytoast.kivytoast import toast
-    toast('running auth..')
     login_result = CheckUserLoginPass(login, password)
     if login_result:
-        toast('Auth success')
         return True
     else:
-        toast('Auth failed')
         return False
 
 

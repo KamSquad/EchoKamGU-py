@@ -8,14 +8,18 @@ from kivymd.toast import toast
 
 
 class LogInScreen(Screen):
+    login_button_pressed = False
+
     def login_press(self):
         login = self.ids.login.text
         password = self.ids.password.text
         if self.check_password(login, password):
-            toast("you're in!")
+            import libs.database as db
+            localdb = db.LocalDB()
+            localdb.set_startscreen(2)
             self.main_manager.current = "news_screen"
-
             app = MDApp.get_running_app()
+            
             if login == "Luna":
                 app.theme_cls.primary_palette = "Blue"
             elif login == "Harry":
@@ -31,14 +35,15 @@ class LogInScreen(Screen):
     def check_password(self, login, password):
         import libs.ztweaks as ztweaks
         if ztweaks.GlobalVars().meme_mode:
-            from kivy.core.audio import SoundLoader
-            sound = SoundLoader.load("login/end.mp3")
-            sound.play()
+            if not self.login_button_pressed:
+                self.login_button_pressed = True
+                from kivy.core.audio import SoundLoader
+                sound = SoundLoader.load("login/end.mp3")
+                sound.play()
         else:
-            #  real mode
+            #  real mode, ea >B-)
             import libs.database as db
             if db.LoginFunc(login, password):
                 return True
-            import kivymd.toast
-            toast('Welcome back')
-            return True
+            toast('Неправильный логин или пароль, повторите попытку')
+            return False

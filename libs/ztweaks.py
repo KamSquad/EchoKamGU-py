@@ -79,7 +79,7 @@ class GlobalVars:
                      CREATE TABLE media
                      (id_key text, type text, path text, is_avatar text);
                      -- init default values
-                     INSERT INTO config (id_key, value) VALUES ('first_run', '1');
+                     INSERT INTO config (id_key, value) VALUES ('first_run', '0');
                      INSERT INTO config (id_key, value) VALUES ('remote_server_ip', '"""+self.remote_server_ip+"""');
                      INSERT INTO config (id_key, value) VALUES ('remote_server_db', '"""+self.remote_server_db+"""');
                      INSERT INTO config (id_key, value) VALUES ('remote_server_http_port', '"""+self.remote_server_http_port+"""');
