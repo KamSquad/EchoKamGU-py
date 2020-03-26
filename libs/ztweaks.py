@@ -40,6 +40,8 @@ class GlobalVars:
     #  /\/\/\
     local_db_name = 'local.db'  # name of local db based on sqlite
 
+    user_role = ''
+
     def Update_local_db_InitScript(self):
         new_remote_server_ip, new_remote_server_db, new_remote_server_http_port, new_local_db_name = GetRemoteServerCredentials()
         if new_remote_server_ip:

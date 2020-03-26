@@ -13,13 +13,15 @@ class LogInScreen(Screen):
     def login_press(self):
         login = self.ids.login.text
         password = self.ids.password.text
-        if self.check_password(login, password):
+        check_password_res = self.check_password(login, password)
+        if check_password_res:
             import libs.database as db
             localdb = db.LocalDB()
             localdb.set_startscreen(2)
+            localdb.save_usertoken(check_password_res[0], check_password_res[1])
             self.main_manager.current = "news_screen"
             app = MDApp.get_running_app()
-            
+
             if login == "Luna":
                 app.theme_cls.primary_palette = "Blue"
             elif login == "Harry":
@@ -43,7 +45,8 @@ class LogInScreen(Screen):
         else:
             #  real mode, ea >B-)
             import libs.database as db
-            if db.LoginFunc(login, password):
-                return True
+            LoginFunc_res = db.LoginFunc(login, password)
+            if LoginFunc_res:
+                return LoginFunc_res[0], LoginFunc_res[1]
             toast('Неправильный логин или пароль, повторите попытку')
-            return False
+            return None

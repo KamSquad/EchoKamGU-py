@@ -64,6 +64,13 @@ class LocalDB:
         self.db_cursor.executescript('UPDATE config SET value="'+str(value)+'" WHERE id_key="first_run"')
         self.db_connection.commit()  # save changes
 
+    def save_usertoken(self, login_hash, pass_hash):
+        user_token = login_hash + '-' + pass_hash
+        self.db_cursor.executescript('''INSERT OR IGNORE INTO config (id_key, value) VALUES ('user_token', "''' + user_token + '''");
+                                        UPDATE config SET value = "''' + user_token + '''" WHERE id_key='user_token';
+                                        ''')
+        self.db_connection.commit()  # save changes
+
     def __init__(self):
         try:
             """
@@ -100,7 +107,7 @@ def GetNewsByUser(user='student', password='kamgustudent'):
 def LoginFunc(login, password):
     login_result = CheckUserLoginPass(login, password)
     if login_result:
-        return True
+        return login_result[0], login_result[1]
     else:
         return False
 
@@ -122,17 +129,17 @@ def CheckUserLoginPass(login, password):
             import hashlib
             hashed_login = hashlib.md5(login.encode('utf-8')).hexdigest()
             hashed_password = hashlib.md5(password.encode('utf-8')).hexdigest()
-            print(hashed_login, hashed_password)
+            #print(hashed_login, hashed_password)
             res = rserv._cmd_get_one(
                 "SELECT id, type FROM users_login WHERE md5(username)='" + hashed_login + "' AND md5(password)='" + hashed_password + "'")
             if res:
                 hashed_role = hashlib.md5(str(res[1]).encode('utf-8')).hexdigest()
                 # save hash of password in local db
                 # SaveUserToken(hashed_password, hashed_role)
-                return True
+                return hashed_login, hashed_password
         except Exception as ex:
             print('[!] [ERROR]\t[CheckUserLoginPass]', ex)
-            return False
+            return None
 
 
 def DownloadPictureByHTTP(server_ip, server_port='4141', file_name='logo.png'):
