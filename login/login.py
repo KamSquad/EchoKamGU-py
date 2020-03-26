@@ -30,7 +30,7 @@ class LogInScreen(Screen):
 
     def check_password(self, login, password):
         import libs.ztweaks as ztweaks
-        if not ztweaks.GlobalVars().meme_mode:
+        if ztweaks.GlobalVars().meme_mode:
             from kivy.core.audio import SoundLoader
             sound = SoundLoader.load("login/end.mp3")
             sound.play()

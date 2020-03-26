@@ -31,8 +31,6 @@ def get_texture_size(text):
 def text_height(text, win_width):
     # получаем среднюю длину символа и высоту шрифта
     text_size = get_texture_size(text)
-    #print(text, text_size)
-    avg_width = text_size[0] / len(text)
     line_height = text_size[1]
 
     height = 0
@@ -41,6 +39,7 @@ def text_height(text, win_width):
     paragraphs = text.split("\n")
     for par in paragraphs:
         par_size = get_texture_size(par)
+        avg_width = par_size[0] / len(par)
         par_width = 0
 
         for word in par.split():
@@ -53,7 +52,8 @@ def text_height(text, win_width):
         height += line_height
         line_count += 1
 
-    print(text, line_count)
+        print(par[:20], line_count, line_height)
+
     # у длинного текста проблемы с этим, поэтому для них побольше
     return height + line_height * (2 if height < 100 else 4)
 
@@ -66,13 +66,6 @@ class ItemDrawer(OneLineIconListItem):
     icon = StringProperty()
 
 
-class NewsPopup(Popup):
-    def __init__(self, title, text):
-        super().__init__()
-        self.title = title
-        self.ids.popup_label.text = text
-
-
 class DrawerList(ThemableBehavior, MDList):
     def set_color_item(self, instance_item):
         """Called when tap on a menu item."""
@@ -83,6 +76,13 @@ class DrawerList(ThemableBehavior, MDList):
                 item.text_color = self.theme_cls.text_color
                 break
         instance_item.text_color = self.theme_cls.primary_color
+
+
+class NewsPopup(Popup):
+    def __init__(self, title, text):
+        super().__init__()
+        self.title = title
+        self.ids.popup_label.text = text
 
 
 class NewsCard(MDCard):
@@ -98,12 +98,6 @@ class NewsCard(MDCard):
         self.short_text = short_text
         self.full_text = full_text
         self.image_path = image_text
-        # self.dialog = MDDialog(
-        #     title=self.title,
-        #     size_hint=(.8, .8),
-        #     text=self.full_text,
-        #     text_button_ok='Назад'
-        # )
         self.popup = NewsPopup(self.title, self.full_text)
 
         if not short_text:
@@ -205,12 +199,6 @@ class NewsScreen(Screen):
         else:
             for _ in range(10):
                 self.news_grid.add_widget(NewsCard())
-            # for card in self.news_grid.children:
-                # card.height = card.ids.news_title.height + card.ids.news_text.height
-                # print(card.height, card.ids.news_title.height, card.ids.news_text.height)
 
         self.nav_list = self.ids.content_drawer.ids.md_list
         self.nav_list.add_widget(ItemDrawer(icon='folder', text='Название страницы'))
-
-        # self.nav_drawer = self.ids.nav_drawer
-        # self.nav_drawer.set_state('closed')
