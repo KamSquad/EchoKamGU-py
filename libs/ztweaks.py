@@ -3,6 +3,7 @@ Tweak library with global vars and some useful functions
 by ZeD!
 """
 
+
 def GetRemoteServerCredentials():
     """
     Function to get needed server's info for connection
@@ -28,7 +29,7 @@ def GetRemoteServerCredentials():
         configs = ReturnConfigFromPaste(paste=pb_latest_paste)
         return configs  # [ip, db_name, http_port, local_db_name]
     except:
-        return None
+        return False, False, False, False
 
 class GlobalVars:
     debug_mode = False  # debug program's variable
@@ -57,7 +58,10 @@ class GlobalVars:
                 """)
 
     def local_db_InitScript_AutoStartUpdate(self):
-        self.Update_local_db_InitScript()
+        try:
+            self.Update_local_db_InitScript()
+        except:
+            print('[!] [ERROR]	[local_db_InitScript_AutoStartUpdate] : Failed')
         return ("""-- init tables
                 UPDATE config SET value='"""+self.remote_server_ip+"""' WHERE id_key='remote_server_ip';
                 UPDATE config SET value='"""+self.remote_server_db+"""' WHERE id_key='remote_server_db';
@@ -125,6 +129,16 @@ def ReturnLocalDBPath():
         return '.\\data\\' + GlobalVars().local_db_name
     else:
         return ProjectFolder(GlobalVars().local_db_name)
+
+
+def nointernet_notify():
+    from kivymd.toast import toast
+    toast('Ошибка соединения с сервером. Проверьте интернет соединение')
+
+
+def invalidlogin_notify():
+    from kivymd.toast import toast
+    toast('Неправильный логин или пароль, повторите попытку')
 
 
 if __name__ == "__main__":

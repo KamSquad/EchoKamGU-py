@@ -1,7 +1,9 @@
 import pymysql
 import sqlite3
 import libs.ztweaks as ztweaks
-#from libs import ztweaks
+
+
+# from libs import ztweaks
 
 
 class RemoteDB:
@@ -51,7 +53,7 @@ class LocalDB:
             if not self.db_cursor.execute('SELECT COUNT(*) FROM ' + table).fetchone():
                 return True
 
-    def check_startscreen(self):
+    def get_startscreen(self):
         return int(self.db_cursor.execute('SELECT value FROM config WHERE id_key="first_run"').fetchone()[0])
 
     def set_startscreen(self, value):
@@ -61,15 +63,20 @@ class LocalDB:
         2 - news
         :param value: on what to switch start screen
         """
-        self.db_cursor.executescript('UPDATE config SET value="'+str(value)+'" WHERE id_key="first_run"')
+        self.db_cursor.executescript('UPDATE config SET value="' + str(value) + '" WHERE id_key="first_run"')
         self.db_connection.commit()  # save changes
 
     def save_usertoken(self, login_hash, pass_hash):
         user_token = login_hash + '-' + pass_hash
-        self.db_cursor.executescript('''INSERT OR IGNORE INTO config (id_key, value) VALUES ('user_token', "''' + user_token + '''");
+        self.db_cursor.executescript(
+            '''INSERT OR IGNORE INTO config (id_key, value) VALUES ('user_token', "''' + user_token + '''");
                                         UPDATE config SET value = "''' + user_token + '''" WHERE id_key='user_token';
                                         ''')
         self.db_connection.commit()  # save changes
+
+    def get_usertoken(self):
+        return self.db_cursor.execute('SELECT value FROM config WHERE id_key="user_token"').fetchone()
+        print()
 
     def __init__(self):
         try:
@@ -112,12 +119,56 @@ def LoginFunc(login, password):
         return False
 
 
-'''
-def SaveUserToken(token, role):
-    with LocalDB(update=False) as ldb:
-        ldb.db_cursor.executescript(ztweaks.GlobalVars().local_db_SaveUserTokenScript(token, role))
-        ldb.db_connection.commit()  # save changes
-'''
+def check_usertoken():
+    """
+    verify user_token validation with remote server
+    :return: 
+    """
+
+    def return_fail_result():
+        """
+        reset token and return to login form
+        :return:
+        """
+        return False
+
+    try:
+        with LocalDB() as ldb:
+            login_hash, pass_hash = ldb.get_usertoken()[0].split('-')
+        if login_hash:
+            with RemoteDB(db_ip=ztweaks.GlobalVars().remote_server_ip, db_login='student',
+                          db_pass='kamgustudent', db_name=ztweaks.GlobalVars().remote_server_db) as rdb:
+                return rdb._cmd_get_one(
+                    "SELECT id, type FROM users_login WHERE md5(username)='" + login_hash +
+                    "' AND md5(password)='" + pass_hash + "'")
+        else:
+            return_fail_result()
+    except:
+        return_fail_result()
+
+
+def check_internet_connection():
+    try:
+        rdb = RemoteDB(ztweaks.GlobalVars().remote_server_ip, 'student', 'kamgustudent',
+                  ztweaks.GlobalVars().remote_server_db)
+        print('[+] [INFO]	[check_internet_connection] : Success')
+        return True
+    except:
+        print('[!] [ERROR]	[check_internet_connection] : Failed')
+        return False
+
+def check_on_init():
+    """
+    to call when app starts
+    fail => drop to login and reset 'user_token'
+    :return:
+    """
+    if check_usertoken():
+        print('[+] [INFO]\t[check_usertoken] : Success')
+        return True
+    else:
+        print('[!] [ERROR]\t[check_usertoken] : Failed')
+        return False
 
 
 def CheckUserLoginPass(login, password):
@@ -129,7 +180,7 @@ def CheckUserLoginPass(login, password):
             import hashlib
             hashed_login = hashlib.md5(login.encode('utf-8')).hexdigest()
             hashed_password = hashlib.md5(password.encode('utf-8')).hexdigest()
-            #print(hashed_login, hashed_password)
+            # print(hashed_login, hashed_password)
             res = rserv._cmd_get_one(
                 "SELECT id, type FROM users_login WHERE md5(username)='" + hashed_login + "' AND md5(password)='" + hashed_password + "'")
             if res:
@@ -160,7 +211,7 @@ if __name__ == '__main__':
     # DownloadPictureByHTTP(server_ip=server_ip)  # TEST HTTP DOWNLOAD
     # KamGUServer = RemoteDB(db_ip=server_ip, db_login='student', db_pass='kamgustudent', db_name='kamgu')
     # print(GetNewsByUser())
-    #local_db = LocalDB()
+    # local_db = LocalDB()
     # SaveUserToken('student_fmf', 'password')
     # SaveUserToken('aa', 'gg')
     # LoginFunc('student_ffimk', 'password')

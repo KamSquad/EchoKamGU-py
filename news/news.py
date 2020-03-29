@@ -147,6 +147,9 @@ class NewsScreen(Screen):
         self.nav_drawer = None
         self.nav_list = None
         self.news_list = []
+        #import libs.database as db
+        # db.check_usertoken()
+        #db.start_init()
 
     def _get_news(self):
         return [["title",
