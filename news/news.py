@@ -16,6 +16,7 @@ from kivymd.uix.dialog import MDDialog
 from random import randint
 from math import ceil
 
+import libs.ztweaks as ztweaks
 
 def get_texture_size(text):
     label = MDLabel(text=text.replace('\n', ''))
@@ -147,11 +148,9 @@ class NewsScreen(Screen):
         self.nav_drawer = None
         self.nav_list = None
         self.news_list = []
-        #import libs.database as db
-        # db.check_usertoken()
-        #db.start_init()
 
     def _get_news(self):
+        ztweaks.checkinternet_and_notify()
         return [["title",
                  "text",
                  "",

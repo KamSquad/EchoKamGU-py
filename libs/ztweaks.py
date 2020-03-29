@@ -140,6 +140,13 @@ def invalidlogin_notify():
     from kivymd.toast import toast
     toast('Неправильный логин или пароль, повторите попытку')
 
+def checkinternet_and_notify():
+    import libs.database as db
+    if not db.check_internet_connection():
+        nointernet_notify()
+        return False
+    else:
+        return True
 
 if __name__ == "__main__":
     # print(ProjectFolder(path='local.db'))
