@@ -31,6 +31,7 @@ def GetRemoteServerCredentials():
     except:
         return False, False, False, False
 
+
 class GlobalVars:
     debug_mode = False  # debug program's variable
     meme_mode = False
@@ -140,6 +141,7 @@ def invalidlogin_notify():
     from kivymd.toast import toast
     toast('Неправильный логин или пароль, повторите попытку')
 
+
 def checkinternet_and_notify():
     import libs.database as db
     if not db.check_internet_connection():
@@ -147,6 +149,7 @@ def checkinternet_and_notify():
         return False
     else:
         return True
+
 
 if __name__ == "__main__":
     # print(ProjectFolder(path='local.db'))
