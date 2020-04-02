@@ -38,7 +38,7 @@ class LocalDB:
     CLASS FOR WORKING WITH LOCAL DB BASED ON SQLITE
     """
 
-    local_db_name = ztweaks.GlobalVars.local_db_name
+    local_db_name = ztweaks.GlobalVars().local_db_name
 
     def init_empty_db(self):
         """
@@ -55,6 +55,11 @@ class LocalDB:
 
     def get_startscreen(self):
         return int(self.db_cursor.execute('SELECT value FROM config WHERE id_key="first_run"').fetchone()[0])
+
+    def get_local_news():
+        with LocalDB() as ldb:
+            local_news = ldb.execute('SELECT * FROM news')
+            return local_news
 
     def set_startscreen(self, value):
         """
@@ -96,11 +101,25 @@ class LocalDB:
     def __enter__(self):
         return self
 
-    def __exit__(self, exc_type, exc_value, exc_traceback):
+    def __exit__(self):
         self._close()
 
     def _close(self):
         self.db_connection.close()
+
+
+def get_remote_news():
+    user = 'student'
+    password = 'kamgustudent'
+    db_ip = ztweaks.GlobalVars().remote_server_ip
+    db_name = ztweaks.GlobalVars().remote_server_db
+    with RemoteDB(db_ip=db_ip, db_login=user, db_pass=password, db_name=db_name) as rserv:
+        res = rserv._cmd_get_all('SELECT * FROM kamgu.news;')
+    return res  # print(res)
+
+
+def save_news_in_local():
+    pass
 
 
 def GetNewsByUser(user='student', password='kamgustudent'):
@@ -112,7 +131,7 @@ def GetNewsByUser(user='student', password='kamgustudent'):
 
 
 def LoginFunc(login, password):
-    login_result = CheckUserLoginPass(login, password)
+    login_result = check_user_loginpass(login, password)
     if login_result:
         return login_result[0], login_result[1]
     else:
@@ -157,6 +176,7 @@ def check_internet_connection():
         print('[!] [ERROR]	[check_internet_connection] : Failed')
         return False
 
+
 def check_on_init():
     """
     to call when app starts
@@ -171,7 +191,7 @@ def check_on_init():
         return False
 
 
-def CheckUserLoginPass(login, password):
+def check_user_loginpass(login, password):
     db_ip = ztweaks.GlobalVars().remote_server_ip
     db_name = ztweaks.GlobalVars().remote_server_db
     with RemoteDB(db_ip=db_ip, db_login='guest', db_pass='kamguguest', db_name=db_name) as rserv:
@@ -205,7 +225,9 @@ def DownloadPictureByHTTP(server_ip, server_port='4141', file_name='logo.png'):
 if __name__ == '__main__':
     server_ip = ztweaks.GlobalVars.remote_server_ip
     server_port = ztweaks.GlobalVars().remote_server_http_port  # SERVER PORT BY DEFAULT
-
+    print(get_remote_news())
+    with LocalDB() as ldb:
+        print(ldb.get_local_news())
     # print( CheckUserLoginPass('student_fmf', 'password') )
 
     # DownloadPictureByHTTP(server_ip=server_ip)  # TEST HTTP DOWNLOAD
