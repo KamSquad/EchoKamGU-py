@@ -31,6 +31,7 @@ def GetRemoteServerCredentials():
     except:
         return False, False, False, False
 
+
 class GlobalVars:
     debug_mode = False  # debug program's variable
     meme_mode = False
