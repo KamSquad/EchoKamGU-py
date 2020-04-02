@@ -1,0 +1,54 @@
+#:import MDNavigationDrawer kivymd.uix.navigationdrawer
+#:import MDList kivymd.uix.list
+#:import MDLabel kivymd.uix.label
+#:import MDSeparator kivymd.uix.card
+#:import MDTextButton kivymd.uix.button
+#:import MDRaisedButton kivymd.uix.button
+#:import MDRoundFlatButton kivymd.uix.button
+#:import MDDialog kivymd.uix.dialog
+#:import Popup kivy.uix.popup
+
+
+<ItemDrawer>:
+    theme_text_color: "Custom"
+    on_release: self.parent.set_color_item(self)
+
+    IconLeftWidget:
+        id: icon
+        icon: root.icon
+        theme_text_color: "Custom"
+        text_color: root.text_color
+
+
+<ContentNavigationDrawer>:
+    orientation: "vertical"
+    padding: "8dp"
+    spacing: "8dp"
+
+    MDLabel:
+        text: "EchoKamGU"
+        font_style: "Button"
+        size_hint_y: None
+        height: self.texture_size[1]
+
+    ScrollView:
+
+        DrawerList:
+            id: md_list
+
+
+<SidebarScreen>
+
+    NavigationLayout:
+
+        ScreenManager:
+
+            NewsScreen:
+                name: 'news_screen'
+                sidebar: root
+
+        MDNavigationDrawer:
+            id: nav_drawer
+
+            ContentNavigationDrawer:
+                id: content_drawer

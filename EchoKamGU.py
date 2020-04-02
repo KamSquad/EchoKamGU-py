@@ -11,6 +11,7 @@ from app import MDApp
 from news import news
 from login import login
 from greetings import greetings
+from sidebar_screen import sidebar
 
 Window.minimum_height = 500
 Window.minimum_width = 500
@@ -20,13 +21,19 @@ Window.release_all_keyboards()
 print(Window.size)
 
 
-for kvfile in ['EchoKamGU.kv', 'news/news.kv', 'login/login.kv', 'greetings/greetings.kv']:
+for kvfile in ['EchoKamGU.kv',
+               'news/news.kv',
+               'login/login.kv',
+               'greetings/greetings.kv',
+               'sidebar_screen/sidebar.kv']:
     with open(kvfile, encoding='utf8') as f:
         Builder.load_string(f.read())
 
 
 class MainScreenManager(ScreenManager):
-    pass
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        self.current = 'sidebar_screen'
 
 
 class MainApp(MDApp):
