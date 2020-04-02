@@ -4,6 +4,7 @@ from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.image import Image
 from kivy.properties import StringProperty
 from kivy.uix.popup import Popup
+from kivy.clock import Clock
 
 from kivymd.uix.button import MDTextButton
 from kivymd.theming import ThemableBehavior
@@ -17,65 +18,12 @@ from random import randint
 from math import ceil
 
 
-def get_texture_size(text):
-    label = MDLabel(text=text.replace('\n', ''))
-    label.text_size = [None, None]
-    label.texture_update()
-    return label.texture_size
-
-
-# в label текстура текста - длинная линия. эта функция разбивает текст на параграфы
-# и отдельно подсчитывает необходимую высоту для каждого. длина текстуры делится на количество
-# знаков в тексте и мы получаем среднюю длину символа. проходя по словам в пвраграфе,
-# функция засекает необходимость переноса на новую строку и увеличивает высоту
 def text_height(text, win_width):
-    # получаем среднюю длину символа и высоту шрифта
-    text_size = get_texture_size(text)
-    line_height = text_size[1]
-
-    height = 0
-    line_count = 0
-
-    paragraphs = text.split("\n")
-    for par in paragraphs:
-        par_size = get_texture_size(par)
-        avg_width = par_size[0] / len(par)
-        par_width = 0
-
-        for word in par.split():
-            par_width += len(word) * avg_width + avg_width
-            if par_width > win_width - 46:
-                height += line_height
-                line_count += 1
-                par_width = len(word)
-
-        height += line_height
-        line_count += 1
-
-        print(par[:20], line_count, line_height)
-
-    # у длинного текста проблемы с этим, поэтому для них побольше
-    return height + line_height * (2 if height < 100 else 4)
-
-
-class ContentNavigationDrawer(BoxLayout):
-    pass
-
-
-class ItemDrawer(OneLineIconListItem):
-    icon = StringProperty()
-
-
-class DrawerList(ThemableBehavior, MDList):
-    def set_color_item(self, instance_item):
-        """Called when tap on a menu item."""
-
-        # Set the color of the icon and text for the menu item.
-        for item in self.children:
-            if item.text_color == self.theme_cls.primary_color:
-                item.text_color = self.theme_cls.text_color
-                break
-        instance_item.text_color = self.theme_cls.primary_color
+    label = MDLabel(text=text)
+    label.text_size = [None, None]
+    label.width = win_width - 40
+    label.texture_update()
+    return label.texture_size[1]
 
 
 class NewsPopup(Popup):
@@ -89,10 +37,8 @@ class NewsCard(MDCard):
     def __init__(self, short_text="", title_text="", image_text="", full_text=""):
         super().__init__()
 
-        img_flag = False
-        sub_flag = False
-        self.remove_widget(self.ids.bottom_sep)
-        self.remove_widget(self.ids.news_sub_button)
+        #self.remove_widget(self.ids.news_image)
+        # self.remove_widget(self.ids.news_sub_button)
 
         self.title = title_text
         self.short_text = short_text
@@ -100,38 +46,31 @@ class NewsCard(MDCard):
         self.image_path = image_text
         self.popup = NewsPopup(self.title, self.full_text)
 
-        if not short_text:
-            title = self.ids.news_title
-            title.text = 'title'
-            title.texture_update()
-            title.height = title.texture_size[1]
+        title = self.ids.news_title
+        title.text = self.title
+        title.height = text_height(title_text, Window.width)
 
-            text = self.ids.news_text
-            text.text = "Длинная текстовая новость №1 " * randint(10, 20)
-            text.texture_update()
-            text.height = text.texture_size[1] / Window.width * text.texture_size[0] + 20
+        text = self.ids.news_text
+        text.text = self.short_text
+        text.height = text_height(self.short_text, Window.width)
 
-        else:
-            title = self.ids.news_title
-            title.text = self.title
-            title.height = text_height(title_text, Window.width)
+        self.image = self.ids.news_image
+        img = Image(source=self.image_path)
+        self.image.source = self.image_path
+        self.image.size = self.image.texture_size
+        self.image.height = min(self.image.size[1], Window.height / 2)
 
-            text = self.ids.news_text
-            text.text = self.short_text
-            text.height = text_height(self.short_text, Window.width)
+        self.ids.buttons_box.height = self.ids.news_show_all_button.height
 
-            img = Image(source=self.image_path)
-            self.ids.news_image.source = self.image_path
-            img_flag = True
-
-        self.height = (title.height +
-                       text.height +
-                       (img.height if img_flag else 0) +
-                       (self.ids.news_sub_button.height if sub_flag else 0))
+        self.height = sum(child.height for child in self.children)
+        #print(self.height)
 
     def show_full(self):
         print('debug')
         self.popup.open()
+
+    def get_image_size(self, image_h, rest_h):
+        return image_h / (image_h + rest_h)
 
 
 class NewsScreen(Screen):
@@ -187,6 +126,11 @@ class NewsScreen(Screen):
                  "data/pics/tv.png"]]
 
     def on_enter(self):
+        Clock.schedule_once(self.add_news)
+
+    def add_news(self, *args):
+        # print(self, self.children)
+
         self.news_grid = self.ids.news_grid
         self.news_list = self._get_news()
 
@@ -200,5 +144,5 @@ class NewsScreen(Screen):
             for _ in range(10):
                 self.news_grid.add_widget(NewsCard())
 
-        self.nav_list = self.ids.content_drawer.ids.md_list
-        self.nav_list.add_widget(ItemDrawer(icon='folder', text='Название страницы'))
+        # self.nav_list = self.ids.content_drawer.ids.md_list
+        # self.nav_list.add_widget(ItemDrawer(icon='folder', text='Название страницы'))
