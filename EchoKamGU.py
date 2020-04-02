@@ -13,6 +13,9 @@ from login import login
 from greetings import greetings
 from sidebar_screen import sidebar
 
+Config.set('graphics', 'resizable', 0)
+# Set the background color for the window
+Window.clearcolor = (1, 1, 1, 1)
 Window.minimum_height = 500
 Window.minimum_width = 500
 Config.set('graphics', 'resizable', 0)
@@ -31,20 +34,37 @@ for kvfile in ['EchoKamGU.kv',
 
 
 class MainScreenManager(ScreenManager):
-    def __init__(self, **kwargs):
+    def __init__(self, localdb, **kwargs):
         super().__init__(**kwargs)
-        self.current = 'sidebar_screen'
+        import libs.database as db
+        import libs.ztweaks as ztweaks
+
+        res = localdb.get_startscreen()
+        if res == 0:
+            self.current = 'greetings'
+            localdb.set_startscreen(1)
+        elif res == 1:
+            self.current = 'login'
+            db.check_internet_connection()
+        else:
+            self.current = 'news_screen'
 
 
-class MainApp(MDApp):
-
+class EchoKamGUApp(MDApp):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         self.theme_cls.primary_palette = "Green"
 
     def build(self):
-        return MainScreenManager()
+        self.icon = 'logo.png'
+        import libs.ztweaks as ztweaks
+        import libs.database as db
+        print('[*] [INFO]\t[App name] \t\t\t= ' + self.get_application_name())
+        print('[*] [INFO]\t[Data Fold Path] \t= ' + ztweaks.ProjectFolder(""))
+        print('[*] [INFO]\t[Local DB Path] \t= ' + ztweaks.ReturnLocalDBPath())
+        localdb = db.LocalDB()  # init local db
+
+        return MainScreenManager(localdb)
 
 
-MainApp().run()
-
+EchoKamGUApp().run()

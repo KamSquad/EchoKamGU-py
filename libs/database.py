@@ -40,6 +40,21 @@ class LocalDB:
 
     local_db_name = ztweaks.GlobalVars().local_db_name
 
+    def __init__(self):
+        try:
+            """
+            CONNECT TO DB
+            """
+            # print(ztweaks.ReturnLocalDBPath())
+            self.db_connection = sqlite3.connect(ztweaks.ReturnLocalDBPath())
+            self.db_cursor = self.db_connection.cursor()
+            if LocalDB.local_db_is_empty(self):
+                LocalDB.init_empty_db(self)
+        except Exception as ex:
+            print('[!] Error:\t' + str(ex))
+            print('[!] Debug Warning:\tlocal db connection failed, running first init...')
+            LocalDB.init_empty_db(self)
+
     def init_empty_db(self):
         """
         FUNCTION FOR FIRST INIT OF DB
@@ -56,10 +71,46 @@ class LocalDB:
     def get_startscreen(self):
         return int(self.db_cursor.execute('SELECT value FROM config WHERE id_key="first_run"').fetchone()[0])
 
-    def get_local_news():
-        with LocalDB() as ldb:
-            local_news = ldb.execute('SELECT * FROM news')
-            return local_news
+    def get_local_news(self):
+        local_news = self.db_cursor.execute('SELECT * FROM news').fetchall()
+        return local_news
+
+    def add_news_array(self, news):
+        for news_elem in news:
+            self.db_cursor.executescript(
+                ''' INSERT OR IGNORE INTO news (id_key, time, title, head_photo, content) 
+                    VALUES ("''' + str(news_elem[0]) + '''", "''' + str(news_elem[1]) + '''", "''' + str(news_elem[2]) + '''",
+                    "''' + str(news_elem[3]) + '''", "''' + str(news_elem[4]) + '''");
+                ''')
+            self.db_connection.commit()  # save changes
+
+    def add_news_record(self, record):
+        self.db_cursor.executescript(
+            ''' INSERT OR IGNORE INTO news (id_key, time, title, head_photo, content) 
+                VALUES ("''' + str(record[0]) + '''", "''' + str(record[1]) + '''", "''' + str(record[2]) + '''",
+                "''' + str(record[3]) + '''", "''' + str(record[4]) + '''");
+            ''')
+        self.db_connection.commit()  # save changes
+
+    def remove_news_record(self, rec_id):
+        self.db_cursor.executescript('DELETE FROM news WHERE id_key="' + str(rec_id) + '"')
+        self.db_connection.commit()  # save changes
+
+    def update_news_record(self, record):
+        self.db_cursor.executescript("""UPDATE news SET time=\"{time}\", title=\"{title}\", head_photo=\"{head_photo}\",
+                                     content=\"{content}\" WHERE id_key=\"{id_key}\" """.format(time=record[1],
+                                                                                                title=record[2],
+                                                                                                head_photo=record[3],
+                                                                                                content=record[4],
+                                                                                                id_key=record[0])
+                                     )
+        self.db_connection.commit()  # save changes
+
+    def clear_news(self):
+        self.db_cursor.executescript('''drop table if exists news;
+                                        CREATE TABLE news
+                                        (id_key text, time text, title text, head_photo text, content text);''')
+        self.db_connection.commit()  # save changes
 
     def set_startscreen(self, value):
         """
@@ -81,32 +132,15 @@ class LocalDB:
 
     def get_usertoken(self):
         return self.db_cursor.execute('SELECT value FROM config WHERE id_key="user_token"').fetchone()
-        print()
-
-    def __init__(self):
-        try:
-            """
-            CONNECT TO DB
-            """
-            # print(ztweaks.ReturnLocalDBPath())
-            self.db_connection = sqlite3.connect(ztweaks.ReturnLocalDBPath())
-            self.db_cursor = self.db_connection.cursor()
-            if LocalDB.local_db_is_empty(self):
-                LocalDB.init_empty_db(self)
-        except Exception as ex:
-            print('[!] Error:\t' + str(ex))
-            print('[!] Debug Warning:\tlocal db connection failed, running first init...')
-            LocalDB.init_empty_db(self)
 
     def __enter__(self):
         return self
 
-    def __exit__(self):
+    def __exit__(self, exc_type, exc_value, exc_traceback):
         self._close()
 
     def _close(self):
         self.db_connection.close()
-
 
 def get_remote_news():
     user = 'student'
@@ -115,19 +149,36 @@ def get_remote_news():
     db_name = ztweaks.GlobalVars().remote_server_db
     with RemoteDB(db_ip=db_ip, db_login=user, db_pass=password, db_name=db_name) as rserv:
         res = rserv._cmd_get_all('SELECT * FROM kamgu.news;')
-    return res  # print(res)
+        return res
 
 
-def save_news_in_local():
-    pass
+def update_local_news(r_news, l_news):
+    """
+    function update local db news.
+    :param r_news: remote news tuple[]
+    :param l_news: local news tuple[]
+    """
+    def get_ids(array):
+        res = []
+        for ar in array:
+            res.append(ar[0])
+        return res
 
+    l_news_ids = get_ids(l_news)
+    r_news_ids = get_ids(r_news)
 
-def GetNewsByUser(user='student', password='kamgustudent'):
-    db_ip = ztweaks.GlobalVars().remote_server_ip
-    db_name = ztweaks.GlobalVars().remote_server_db
-    with RemoteDB(db_ip=db_ip, db_login=user, db_pass=password, db_name=db_name) as rserv:
-        res = rserv._cmd_get_all('SELECT * FROM kamgu.news;')
-        return res  # print(res)
+    # DELETE NEWS FROM LOCAL
+    for elem in l_news:
+        if elem not in r_news_ids:
+            with LocalDB() as ldb:
+                ldb.remove_news_record(elem[0])
+    with LocalDB() as ldb:
+        l_news = ldb.get_local_news()
+    # ADD NEWS TO LOCAL
+    for elem in r_news:
+        if elem not in l_news:
+            with LocalDB() as ldb:
+                ldb.add_news_record(elem)
 
 
 def LoginFunc(login, password):
@@ -226,8 +277,6 @@ if __name__ == '__main__':
     server_ip = ztweaks.GlobalVars.remote_server_ip
     server_port = ztweaks.GlobalVars().remote_server_http_port  # SERVER PORT BY DEFAULT
     print(get_remote_news())
-    with LocalDB() as ldb:
-        print(ldb.get_local_news())
     # print( CheckUserLoginPass('student_fmf', 'password') )
 
     # DownloadPictureByHTTP(server_ip=server_ip)  # TEST HTTP DOWNLOAD
