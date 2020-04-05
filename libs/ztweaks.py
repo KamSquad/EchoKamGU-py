@@ -3,6 +3,7 @@ Tweak library with global vars and some useful functions
 by ZeD!
 """
 
+
 def GetRemoteServerCredentials():
     """
     Function to get needed server's info for connection
@@ -28,7 +29,7 @@ def GetRemoteServerCredentials():
         configs = ReturnConfigFromPaste(paste=pb_latest_paste)
         return configs  # [ip, db_name, http_port, local_db_name]
     except:
-        return None
+        return False, False, False, False
 
 
 class GlobalVars:
@@ -40,6 +41,8 @@ class GlobalVars:
     remote_server_http_port = '4141'
     #  /\/\/\
     local_db_name = 'local.db'  # name of local db based on sqlite
+
+    user_role = ''
 
     def Update_local_db_InitScript(self):
         new_remote_server_ip, new_remote_server_db, new_remote_server_http_port, new_local_db_name = GetRemoteServerCredentials()
@@ -56,7 +59,10 @@ class GlobalVars:
                 """)
 
     def local_db_InitScript_AutoStartUpdate(self):
-        self.Update_local_db_InitScript()
+        try:
+            self.Update_local_db_InitScript()
+        except:
+            print('[!] [ERROR]	[local_db_InitScript_AutoStartUpdate] : Failed')
         return ("""-- init tables
                 UPDATE config SET value='"""+self.remote_server_ip+"""' WHERE id_key='remote_server_ip';
                 UPDATE config SET value='"""+self.remote_server_db+"""' WHERE id_key='remote_server_db';
@@ -80,10 +86,12 @@ class GlobalVars:
                      CREATE TABLE media
                      (id_key text, type text, path text, is_avatar text);
                      -- init default values
+                     INSERT INTO config (id_key, value) VALUES ('first_run', '0');
                      INSERT INTO config (id_key, value) VALUES ('remote_server_ip', '"""+self.remote_server_ip+"""');
                      INSERT INTO config (id_key, value) VALUES ('remote_server_db', '"""+self.remote_server_db+"""');
                      INSERT INTO config (id_key, value) VALUES ('remote_server_http_port', '"""+self.remote_server_http_port+"""');
                      INSERT INTO config (id_key, value) VALUES ('local_db_name', '"""+self.local_db_name+"""');
+                     
                   """)
     pb_user = 'zedcode505'
     pb_pass = 'cH8A$up4F4'
@@ -123,6 +131,23 @@ def ReturnLocalDBPath():
     else:
         return ProjectFolder(GlobalVars().local_db_name)
 
+
+def nointernet_notify():
+    from kivymd.toast import toast
+    toast('Ошибка соединения с сервером. Проверьте интернет соединение')
+
+
+def invalidlogin_notify():
+    from kivymd.toast import toast
+    toast('Неправильный логин или пароль, повторите попытку')
+
+def checkinternet_and_notify():
+    import libs.database as db
+    if not db.check_internet_connection():
+        nointernet_notify()
+        return False
+    else:
+        return True
 
 if __name__ == "__main__":
     # print(ProjectFolder(path='local.db'))

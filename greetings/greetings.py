@@ -78,5 +78,4 @@ class GreetCard(MDCard):
 class GreetingsScreen(Screen):
     def __init__(self, **kw):
         super().__init__(**kw)
-
         crop_image_for_card(get_relative_path(IMAGE_PATH))
