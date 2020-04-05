@@ -5,7 +5,7 @@
 - плитка  картинкой и коротким текстом
 """
 from kivy.uix.label import Label
-from kivy.uix.button import  Button
+from kivy.uix.button import Button
 from kivymd.uix.card import MDCardPost
 from kivymd.uix.dialog import MDDialog
 from kivymd.theming import ThemeManager
@@ -26,7 +26,6 @@ def subscribe():
 
 
 def news_cards(self):
-
     def callback_for_menu_items(text_item):
         subscribe()
 
@@ -48,18 +47,15 @@ def news_cards(self):
             dialog.open()
             sleep(0.01)
 
-            # Вариант с открытием нового окна с тектом, недоделан
-            # self.ids.grid_full.add_widget(Label(text='full text of {} '.format(news_id) * 100))
-            # self.current = 'full_text'
+    # instance_grid_card = self.ids.grid_card
 
-    instance_grid_card = self.ids.grid_card
     buttons = ['pen']
     menu_items = [{'viewclass': 'MDMenuItem',
                    'text': 'Записаться',
                    'callback': callback_for_menu_items}]
 
-    if not self.cards_created:
-        self.cards_created = True
+    # if not self.cards_created:
+    #     self.cards_created = True
 
         # for i in range(10):
         #     instance_grid_card.add_widget(Button(text='Hello {}'.format(i)))
@@ -90,4 +86,3 @@ def news_cards(self):
         #         #heigth=250,
         #         callback=partial(show_full_text, 2),
         #         buttons=buttons))
-

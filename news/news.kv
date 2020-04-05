@@ -1,0 +1,79 @@
+#:import MDNavigationDrawer kivymd.uix.navigationdrawer
+#:import MDList kivymd.uix.list
+#:import MDLabel kivymd.uix.label
+#:import MDSeparator kivymd.uix.card
+#:import MDTextButton kivymd.uix.button
+#:import MDRaisedButton kivymd.uix.button
+#:import MDRoundFlatButton kivymd.uix.button
+#:import MDDialog kivymd.uix.dialog
+#:import Popup kivy.uix.popup
+
+
+<NewsPopup>
+    auto_dismiss: False
+    background: '/data/pics/white.png'
+    title_color: (0, 0, 0, 1)
+    size_hint: (.8, .8)
+
+    BoxLayout:
+
+        MDLabel:
+            id: popup_label
+
+        MDRaisedButton:
+            text: 'Назад'
+            on_press: root.dismiss()
+
+
+<NewsCard>
+    orientation: "vertical"
+    size_hint_y: None
+    padding: [0, 10, 0, 10]
+    spacing: "10dp"
+    on_touch_down: self.show_full() if self.collide_point(*args[1].pos) else None
+
+    Image:
+        id: news_image
+
+    MDSeparator:
+        height: "1dp"
+
+    MDLabel:
+        id: news_title
+        theme_text_color: "Primary"
+        size_hint_y: None
+        padding: [0, 15]
+
+    MDSeparator:
+        height: "1dp"
+
+    MDLabel:
+        id: news_text
+        padding: [0, 15]
+        size_hint_y: None
+
+
+<NewsScreen>:
+    sidebar: None
+
+    BoxLayout:
+        orientation: 'vertical'
+
+        MDToolbar:
+            title: "Новости"
+            pos_hint: {"top": 1}
+            elevation: 10
+            left_action_items: [['menu', lambda x: root.sidebar.ids.nav_drawer.set_state('toggle')]]
+
+        ScrollView:
+            size_hint: 1, 1
+            do_scroll_x: False
+
+            MDList:
+                id: news_grid
+                cols: 1
+                spacing: dp(5)
+                padding: dp(5)
+                size_hint_y: None
+                height: self.minimum_height
+

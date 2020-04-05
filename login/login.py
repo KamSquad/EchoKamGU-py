@@ -1,10 +1,10 @@
 from kivy.uix.screenmanager import Screen
 from kivy.uix.gridlayout import GridLayout
 from kivy.uix.boxlayout import BoxLayout
+from kivy.uix.image import AsyncImage
 
 from app import MDApp
 from kivymd.toast import toast
-from kivymd.uix.textfield import MDTextFieldRound
 
 
 class LogInScreen(Screen):
@@ -12,8 +12,7 @@ class LogInScreen(Screen):
         login = self.ids.login.text
         password = self.ids.password.text
         if self.check_password(login, password):
-            toast("you're in!")
-            self.main_manager.current = "news"
+            self.main_manager.current = "sidebar_screen"
 
             app = MDApp.get_running_app()
             if login == "Luna":
@@ -29,10 +28,16 @@ class LogInScreen(Screen):
                 app.theme_cls.primary_palette = "DeepPurple"
 
     def check_password(self, login, password):
-        print(login, password)
-        return True
-
-
-class Container(BoxLayout):
-    pass
-
+        import libs.ztweaks as ztweaks
+        if ztweaks.GlobalVars().meme_mode:
+            from kivy.core.audio import SoundLoader
+            sound = SoundLoader.load("login/end.mp3")
+            sound.play()
+        else:
+            #  real mode
+            import libs.database as db
+            # if db.LoginFunc(login, password):
+            #     return True
+            import kivymd.toast
+            toast('Welcome back')
+            return True
