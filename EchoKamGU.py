@@ -36,6 +36,7 @@ for kvfile in ['EchoKamGU.kv',
 class MainScreenManager(ScreenManager):
     def __init__(self, localdb, **kwargs):
         super().__init__(**kwargs)
+        # self.current = 'sidebar_screen'
         import libs.database as db
         import libs.ztweaks as ztweaks
 
