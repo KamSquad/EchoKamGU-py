@@ -37,9 +37,6 @@ class NewsCard(MDCard):
     def __init__(self, short_text="", title_text="", image_text="", full_text=""):
         super().__init__()
 
-        #self.remove_widget(self.ids.news_image)
-        # self.remove_widget(self.ids.news_sub_button)
-
         self.title = title_text
         self.short_text = short_text
         self.full_text = full_text
@@ -60,13 +57,9 @@ class NewsCard(MDCard):
         self.image.size = self.image.texture_size
         self.image.height = min(self.image.size[1], Window.height / 2)
 
-        self.ids.buttons_box.height = self.ids.news_show_all_button.height
-
         self.height = sum(child.height for child in self.children)
-        #print(self.height)
 
     def show_full(self):
-        print('debug')
         self.popup.open()
 
     def get_image_size(self, image_h, rest_h):
@@ -82,11 +75,7 @@ class NewsScreen(Screen):
         self.news_list = []
 
     def _get_news(self):
-        return [["title",
-                 "text",
-                 "",
-                 "data/pics/koshak_flat.png"],
-                ["ПРОФИЛАКТИКА КОРОНАВИРУСНОЙ ИНФЕКЦИИ, ГРИППА И ДРУГИХ ОРВИ",
+        return [["ПРОФИЛАКТИКА КОРОНАВИРУСНОЙ ИНФЕКЦИИ, ГРИППА И ДРУГИХ ОРВИ",
                  "Что нужно делать в период активной циркуляции возбудителей коронавирусной инфекции, гриппа и других "
                  "возбудителей острых респираторных вирусных инфекций (ОРВИ) для того, чтобы предотвратить "
                  "собственное заражение и обезопасить окружающих, если заболели вы?",

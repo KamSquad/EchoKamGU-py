@@ -28,7 +28,9 @@
 <NewsCard>
     orientation: "vertical"
     size_hint_y: None
+    padding: [0, 10, 0, 10]
     spacing: "10dp"
+    on_touch_down: self.show_full() if self.collide_point(*args[1].pos) else None
 
     Image:
         id: news_image
@@ -49,26 +51,6 @@
         id: news_text
         padding: [0, 15]
         size_hint_y: None
-
-    MDSeparator:
-        id: bottom_sep
-        height: "1dp"
-
-    BoxLayout:
-        id: buttons_box
-        orientation: 'horizontal'
-        spacing: "20dp"
-        size_hint_y: None
-
-        MDRoundFlatButton:
-            id: news_show_all_button
-            text: "Открыть"
-            padding: [0, 0, 20, 0]
-            on_press: root.show_full()
-
-        MDRoundFlatButton:
-            id: news_sub_button
-            text: "Записаться"
 
 
 <NewsScreen>:
