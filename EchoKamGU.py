@@ -48,7 +48,7 @@ class MainScreenManager(ScreenManager):
             self.current = 'login'
             db.check_internet_connection()
         else:
-            self.current = 'news_screen'
+            self.current = 'sidebar_screen'
 
 
 class EchoKamGUApp(MDApp):

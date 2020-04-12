@@ -93,7 +93,7 @@ class LocalDB:
         self.db_connection.commit()  # save changes
 
     def remove_news_record(self, rec_id):
-        self.db_cursor.executescript('DELETE FROM news WHERE id_key="' + str(rec_id) + '"')
+        self.db_cursor.executescript("DELETE FROM news WHERE id_key=\"" + str(rec_id) + '"')
         self.db_connection.commit()  # save changes
 
     def update_news_record(self, record):
@@ -242,7 +242,7 @@ def check_on_init():
         return False
 
 
-def check_user_loginpass(login, password):
+def check_user_loginpass(login, password, hashed=False):
     db_ip = ztweaks.GlobalVars().remote_server_ip
     db_name = ztweaks.GlobalVars().remote_server_db
     with RemoteDB(db_ip=db_ip, db_login='guest', db_pass='kamguguest', db_name=db_name) as rserv:
@@ -252,19 +252,69 @@ def check_user_loginpass(login, password):
             hashed_login = hashlib.md5(login.encode('utf-8')).hexdigest()
             hashed_password = hashlib.md5(password.encode('utf-8')).hexdigest()
             # print(hashed_login, hashed_password)
-            res = rserv._cmd_get_one(
-                "SELECT id, type FROM users_login WHERE md5(username)='" + hashed_login + "' AND md5(password)='" + hashed_password + "'")
+            if hashed:
+                res = rserv._cmd_get_one(
+                    "SELECT id, type FROM users_login WHERE md5(username)='" + login + "' AND md5(password)='" + password + "'")
+            else:
+                res = rserv._cmd_get_one(
+                    "SELECT id, type FROM users_login WHERE md5(username)='" + hashed_login + "' AND md5(password)='" + hashed_password + "'")
             if res:
                 hashed_role = hashlib.md5(str(res[1]).encode('utf-8')).hexdigest()
                 # save hash of password in local db
                 # SaveUserToken(hashed_password, hashed_role)
-                return hashed_login, hashed_password
+                return hashed_login, hashed_password, res[0]
         except Exception as ex:
             print('[!] [ERROR]\t[CheckUserLoginPass]', ex)
             return None
 
 
-def DownloadPictureByHTTP(server_ip, server_port='4141', file_name='logo.png'):
+def get_user_id_by_user_token():
+    with LocalDB() as ldb:
+        user_hashed = ldb.get_usertoken()[0].split('-')
+        user = check_user_loginpass(user_hashed[0], user_hashed[1], hashed=True)
+        if user:
+            return user[2]
+
+
+def get_remote_userinfo_by_id(user_id):
+    """
+    Function to grab user's info by id in remote database
+    Thx with love to ZedCode by Egorka
+
+    Example:
+        import libs.database as db
+        import libs.ztweaks as zt
+        if zt.checkinternet_and_notify():
+            get_remote_user_info(user_id=1)
+
+    :param user_id: id of user in database
+    :return: user_info<tuple>
+    """
+    db_ip = ztweaks.GlobalVars().remote_server_ip
+    db_name = ztweaks.GlobalVars().remote_server_db
+    with RemoteDB(db_ip=db_ip, db_login='student', db_pass='kamgustudent', db_name=db_name) as rdb:
+        user_info = rdb._cmd_get_one("SELECT * FROM kamgu.users_info WHERE login_id={user_id}".format(user_id=user_id))
+        return user_info[2:]  # [*:] ignoring first not needed remote id's
+
+
+def get_local_user_info():
+    """
+        Function to grab local user's info in remote database
+        Thx with love to ZedCode by Egorka
+
+        Example:
+            import libs.database as db
+            import libs.ztweaks as zt
+            if zt.checkinternet_and_notify():
+                get_local_user_info()
+
+        :return: user_info<tuple>
+        """
+    user_id = get_user_id_by_user_token()
+    return get_remote_userinfo_by_id(user_id)
+
+
+def download_media_from_remote(server_ip, server_port='4141', file_name='logo.png'):
     import urllib3
     import shutil
     http = urllib3.PoolManager()
@@ -276,7 +326,10 @@ def DownloadPictureByHTTP(server_ip, server_port='4141', file_name='logo.png'):
 if __name__ == '__main__':
     server_ip = ztweaks.GlobalVars.remote_server_ip
     server_port = ztweaks.GlobalVars().remote_server_http_port  # SERVER PORT BY DEFAULT
-    print(get_remote_news())
+    tst = ['1', '2', '3', '4', '5']
+    print(tst[-2:])
+
+    # print(get_remote_news())
     # print( CheckUserLoginPass('student_fmf', 'password') )
 
     # DownloadPictureByHTTP(server_ip=server_ip)  # TEST HTTP DOWNLOAD
