@@ -1,0 +1,55 @@
+#:import MDLabel kivymd.label.MDLabel
+#:import MDTextField kivymd.textfields.MDTextField
+#:import MDRaisedButton kivymd.button.MDRaisedButton
+<ItemLabel@MDLabel>:
+    font_size: '25sp'
+    halign: 'top'
+    valign: 'middle'
+    text_size: self.size
+
+<Container>:
+    cols: 1
+    padding: 30
+    spacing: 20
+
+    FloatLayout:
+        Image:
+            halign: 'top'
+            valign: 'middle'
+            source: 'mylogo.png'
+            size_hint: 0.65, 0.65
+            pos_hint: {'center_x': 0.5, 'center_y': 0.85}
+
+        MDLabel:
+            text_size: '48sp'
+            halign: 'left'
+            valign: 'middle'
+            size: self.texture_size
+            pos_hint: {'center_x': 0.5, 'center_y': 0.6}
+            text: 'Нет подключения к Интернету'
+            font_size: '36sp'
+            bold: True
+
+        MDLabel:
+            text_size: self.size
+            halign: 'left'
+            valign: 'middle'
+            size: self.texture_size
+            pos_hint: {'center_x': 0.5, 'center_y': 0.4}
+            text: 'Не удается подключиться к серверу.\nПопробуйте сделать следующее: \n1. Проверьте подключение к Интернету \n2. Проверьте настройки прокси-сервера и брандмауэра'
+            font_size: '18sp'
+
+        Button:
+            pos_hint: {'center_x': 0.5, 'center_y': 0.15}
+            size_hint: 0.6, 0.1
+            text: 'Обновить'
+            font_size: '30sp'
+
+            on_release:
+                self.text = '...'
+
+
+
+
+
+
