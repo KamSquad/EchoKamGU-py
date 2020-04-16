@@ -228,6 +228,7 @@ def check_usertoken():
         reset token and return to login form
         :return: False
         """
+        LocalDB.set_startscreen(value=1)
         return False
 
     try:
