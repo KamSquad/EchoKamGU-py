@@ -33,7 +33,7 @@ class MediaServer:
     Class for work with remote FTP server contains media files
 
     Specify dir/folder when downloading needed file:
-    * pics/   - pictures
+    * pic/   - pictures
     * avatar/ - avatar pictures
     * music/  - music
     * video/  - video
@@ -49,7 +49,7 @@ class MediaServer:
         :return:
         """
         from pathlib import Path
-        Path(zt.ProjectFolder("media/pics")).mkdir(parents=True, exist_ok=True)
+        Path(zt.ProjectFolder("media/pic")).mkdir(parents=True, exist_ok=True)
         Path(zt.ProjectFolder("media/avatar")).mkdir(parents=True, exist_ok=True)
         Path(zt.ProjectFolder("media/music")).mkdir(parents=True, exist_ok=True)
         Path(zt.ProjectFolder("media/video")).mkdir(parents=True, exist_ok=True)
@@ -64,12 +64,12 @@ class MediaServer:
         """
         download file from remote media server (using FTP)
         :param file_path: string that consists of:
-          folder + filename, ex: pics/picture.png
+          folder + filename, ex: pic/picture.png
 
         :Example:
             import libs.media as md
             with md.MediaServer() as ms:
-                ms.download_file('pics/koshak.jpg')
+                ms.download_file('pic/koshak.jpg')
 
         :return: True - OK, No File - 404, Another error - False
         """
@@ -94,7 +94,7 @@ class MediaServer:
         :Example:
             import libs.media as md
             with md.MediaServer() as ms:
-                ms.upload_file('pics', 'C:/Users/ZeD/Pictures/koshak.jpg')
+                ms.upload_file('pic', 'C:/Users/ZeD/Pictures/koshak.jpg')
 
         :return: True - OK, False - Error
         """
@@ -124,6 +124,5 @@ class MediaServer:
 
 
 if __name__ == '__main__':
-    print(get_password())
-    # ftp.download_file('pics/volk.jpg')
+    pass
 

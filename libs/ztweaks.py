@@ -38,18 +38,16 @@ class GlobalVars:
     #  \/\/\/ SERVER CONFIG
     remote_server_ip = '80.211.50.225'
     remote_server_db = 'kamgu'
-    remote_server_http_port = '4141'
     #  /\/\/\
     local_db_name = 'local.db'  # name of local db based on sqlite
 
     user_role = ''
 
     def Update_local_db_InitScript(self):
-        new_remote_server_ip, new_remote_server_db, new_remote_server_http_port, new_local_db_name = GetRemoteServerCredentials()
+        new_remote_server_ip, new_remote_server_db, new_local_db_name = GetRemoteServerCredentials()
         if new_remote_server_ip:
             self.remote_server_ip = new_remote_server_ip
             self.remote_server_db = new_remote_server_db
-            self.remote_server_http_port = new_remote_server_http_port
             self.local_db_name = new_local_db_name
 
     def local_db_SaveLoginScript(self, user_card):
@@ -66,7 +64,6 @@ class GlobalVars:
         return ("""-- init tables
                 UPDATE config SET value='"""+self.remote_server_ip+"""' WHERE id_key='remote_server_ip';
                 UPDATE config SET value='"""+self.remote_server_db+"""' WHERE id_key='remote_server_db';
-                UPDATE config SET value='"""+self.remote_server_http_port+"""' WHERE id_key='remote_server_http_port';
                 UPDATE config SET value='"""+self.local_db_name+"""' WHERE id_key='local_db_name';
                 """)
 
@@ -89,7 +86,6 @@ class GlobalVars:
                      INSERT INTO config (id_key, value) VALUES ('first_run', '0');
                      INSERT INTO config (id_key, value) VALUES ('remote_server_ip', '"""+self.remote_server_ip+"""');
                      INSERT INTO config (id_key, value) VALUES ('remote_server_db', '"""+self.remote_server_db+"""');
-                     INSERT INTO config (id_key, value) VALUES ('remote_server_http_port', '"""+self.remote_server_http_port+"""');
                      INSERT INTO config (id_key, value) VALUES ('local_db_name', '"""+self.local_db_name+"""');
                      
                   """)
