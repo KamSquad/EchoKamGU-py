@@ -143,6 +143,19 @@ class LocalDB:
         )
         self.db_connection.commit()  # save changes
 
+    def save_local_media_record(self, record):
+        self.db_cursor.executescript(
+            ''' INSERT OR IGNORE INTO media (id_key, type, path, is_avatar)
+                VALUES ("{id}", "{type}", "{path}", "{is_avatar}");
+                UPDATE media SET type="{type}", path="{path}", is_avatar="{is_avatar}" WHERE id_key='{id}';
+            '''.format(id=record[0],
+                       type=record[1],
+                       path=record[2],
+                       is_avatar=record[3]
+                       )
+        )
+        self.db_connection.commit()  # save changes
+
     def get_usertoken(self):
         return self.db_cursor.execute('SELECT value FROM config WHERE id_key="user_token"').fetchone()
 
@@ -337,13 +350,35 @@ def get_local_user_info():
     return get_remote_userinfo_by_id(user_id)
 
 
-def download_media_from_remote(server_ip, server_port='4141', file_name='logo.png'):
-    import urllib3
-    import shutil
-    http = urllib3.PoolManager()
-    url = 'http://' + server_ip + ':' + server_port + '/' + file_name
-    with http.request('GET', url, preload_content=False) as resp, open('./data/pics/' + file_name, 'wb') as out_file:
-        shutil.copyfileobj(resp, out_file)
+def sync_media_table():
+    """
+    Download and syncing media content table
+
+    :Example:
+        import libs.database as db
+        db.sync_media()
+
+    :return: True/False as success status
+    """
+    def get_media_table_from_remote():
+        """
+        Grab media table from remote
+        :return: [array of media records]
+        """
+        with RemoteDB(db_ip=ztweaks.GlobalVars().remote_server_ip,
+                      db_login='student',
+                      db_pass='kamgustudent',
+                      db_name=ztweaks.GlobalVars().remote_server_db) as rdb:
+            remote_news = rdb._cmd_get_all('SELECT * FROM kamgu.media;')
+            return remote_news
+    try:
+        r_news = get_media_table_from_remote()
+        with LocalDB() as ldb:
+            for new in r_news:
+                ldb.save_local_media_record(new)
+        return True
+    except:
+        return False
 
 
 if __name__ == '__main__':
