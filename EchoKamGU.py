@@ -12,6 +12,8 @@ from news import news
 from login import login
 from greetings import greetings
 from sidebar_screen import sidebar
+from settings import settings
+from notifications_settings import notifications_settings
 
 Config.set('graphics', 'resizable', 0)
 # Set the background color for the window
@@ -28,7 +30,9 @@ for kvfile in ['EchoKamGU.kv',
                'news/news.kv',
                'login/login.kv',
                'greetings/greetings.kv',
-               'sidebar_screen/sidebar.kv']:
+               'sidebar_screen/sidebar.kv',
+               'settings/settings.kv',
+               'notifications_settings/notifications_settings.kv']:
     with open(kvfile, encoding='utf8') as f:
         Builder.load_string(f.read())
 
