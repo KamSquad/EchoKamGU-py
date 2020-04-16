@@ -23,7 +23,6 @@ Window.fullsize = 'auto'
 Window.release_all_keyboards()
 print(Window.size)
 
-
 for kvfile in ['EchoKamGU.kv',
                'news/news.kv',
                'login/login.kv',
@@ -48,7 +47,11 @@ class MainScreenManager(ScreenManager):
             self.current = 'login'
             db.check_internet_connection()
         else:
-            self.current = 'sidebar_screen'
+            if db.check_usertoken():
+                self.current = 'sidebar_screen'
+            else:
+                self.current = 'login'
+                db.check_internet_connection()
 
 
 class EchoKamGUApp(MDApp):
