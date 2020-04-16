@@ -71,7 +71,7 @@ class MediaServer:
             with md.MediaServer() as ms:
                 ms.download_file('pics/koshak.jpg')
 
-        :return: void
+        :return: True - OK, No File - 404, Another error - False
         """
         try:
             with open(zt.ProjectFolder('media/' + file_path), 'wb') as f:
@@ -96,13 +96,18 @@ class MediaServer:
             with md.MediaServer() as ms:
                 ms.upload_file('pics', 'C:/Users/ZeD/Pictures/koshak.jpg')
 
-        :return: void
+        :return: True - OK, False - Error
         """
-        file_name = os.path.split(file_path)[-1]
-        print(file_name)
-        upload_path = self.pwd + '/' + file_folder + '/' + file_name
-        with open(file_path, 'rb') as fobj:
-            self.ftp.storbinary('STOR ' + upload_path, fobj, 1024)
+        try:
+            file_name = os.path.split(file_path)[-1]
+            print(file_name)
+            upload_path = self.pwd + '/' + file_folder + '/' + file_name
+            with open(file_path, 'rb') as fobj:
+                self.ftp.storbinary('STOR ' + upload_path, fobj, 1024)
+            return True
+        except Exception as ex:
+            print('[*] [ERROR]\t[Uploading file]\tError: ' + str(ex))
+            return False
 
     def get_pwd(self):
         """
