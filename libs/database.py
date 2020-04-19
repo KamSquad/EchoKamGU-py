@@ -79,21 +79,31 @@ class LocalDB:
         for news_elem in news:
             self.db_cursor.executescript(
                 ''' INSERT OR IGNORE INTO news (id_key, time, title, head_photo, content) 
-                    VALUES ("''' + str(news_elem[0]) + '''", "''' + str(news_elem[1]) + '''", "''' + str(news_elem[2]) + '''",
-                    "''' + str(news_elem[3]) + '''", "''' + str(news_elem[4]) + '''");
-                ''')
+                    VALUES ("{id_key}", "{time}", "{title}", "{head_photo}", "{content}");
+                '''.format(id_key=str(news_elem[0]),
+                           time=str(news_elem[1]),
+                           title=str(news_elem[2]),
+                           head_photo=str(news_elem[3]),
+                           content=str(news_elem[4])
+                )
+            )
             self.db_connection.commit()  # save changes
 
     def add_news_record(self, record):
         self.db_cursor.executescript(
             ''' INSERT OR IGNORE INTO news (id_key, time, title, head_photo, content) 
-                VALUES ("''' + str(record[0]) + '''", "''' + str(record[1]) + '''", "''' + str(record[2]) + '''",
-                "''' + str(record[3]) + '''", "''' + str(record[4]) + '''");
-            ''')
+                VALUES ("{id_key}", "{time}", "{title}", "{head_photo}", "{content}");
+            '''.format(id_key=str(record[0]),
+                       time=str(record[1]),
+                       title=str(record[2]),
+                       head_photo=str(record[3]),
+                       content=str(record[4])
+                       )
+        )
         self.db_connection.commit()  # save changes
 
     def remove_news_record(self, rec_id):
-        self.db_cursor.executescript('DELETE FROM news WHERE id_key="' + str(rec_id) + '"')
+        self.db_cursor.executescript("DELETE FROM news WHERE id_key='{recid}'".format(recid=str(rec_id)))
         self.db_connection.commit()  # save changes
 
     def update_news_record(self, record):
@@ -119,15 +129,31 @@ class LocalDB:
         2 - news
         :param value: on what to switch start screen
         """
-        self.db_cursor.executescript('UPDATE config SET value="' + str(value) + '" WHERE id_key="first_run"')
+        self.db_cursor.executescript('UPDATE config SET value="{value}" WHERE id_key="first_run"'
+                                     .format(value=str(value))
+                                     )
         self.db_connection.commit()  # save changes
 
     def save_usertoken(self, login_hash, pass_hash):
         user_token = login_hash + '-' + pass_hash
         self.db_cursor.executescript(
-            '''INSERT OR IGNORE INTO config (id_key, value) VALUES ('user_token', "''' + user_token + '''");
-                                        UPDATE config SET value = "''' + user_token + '''" WHERE id_key='user_token';
-                                        ''')
+            ''' INSERT OR IGNORE INTO config (id_key, value) VALUES ('user_token', "{user_token}");
+                UPDATE config SET value = "{user_token}" WHERE id_key='user_token';
+            '''.format(user_token=user_token)
+        )
+        self.db_connection.commit()  # save changes
+
+    def save_local_media_record(self, record):
+        self.db_cursor.executescript(
+            ''' INSERT OR IGNORE INTO media (id_key, type, path, is_avatar)
+                VALUES ("{id}", "{type}", "{path}", "{is_avatar}");
+                UPDATE media SET type="{type}", path="{path}", is_avatar="{is_avatar}" WHERE id_key='{id}';
+            '''.format(id=record[0],
+                       type=record[1],
+                       path=record[2],
+                       is_avatar=record[3]
+                       )
+        )
         self.db_connection.commit()  # save changes
 
     def get_usertoken(self):
@@ -141,6 +167,7 @@ class LocalDB:
 
     def _close(self):
         self.db_connection.close()
+
 
 def get_remote_news():
     user = 'student'
@@ -158,6 +185,7 @@ def update_local_news(r_news, l_news):
     :param r_news: remote news tuple[]
     :param l_news: local news tuple[]
     """
+
     def get_ids(array):
         res = []
         for ar in array:
@@ -198,8 +226,10 @@ def check_usertoken():
     def return_fail_result():
         """
         reset token and return to login form
-        :return:
+        :return: False
         """
+        with LocalDB() as ldb:
+            ldb.set_startscreen(value=1)
         return False
 
     try:
@@ -209,8 +239,10 @@ def check_usertoken():
             with RemoteDB(db_ip=ztweaks.GlobalVars().remote_server_ip, db_login='student',
                           db_pass='kamgustudent', db_name=ztweaks.GlobalVars().remote_server_db) as rdb:
                 return rdb._cmd_get_one(
-                    "SELECT id, type FROM users_login WHERE md5(username)='" + login_hash +
-                    "' AND md5(password)='" + pass_hash + "'")
+                    """ SELECT id, type FROM users_login
+                        WHERE md5(username)='{llogin}' AND md5(password)='{lpass}'""".format(llogin=login_hash,
+                                                                                             lpass=pass_hash)
+                )
         else:
             return_fail_result()
     except:
@@ -220,7 +252,7 @@ def check_usertoken():
 def check_internet_connection():
     try:
         rdb = RemoteDB(ztweaks.GlobalVars().remote_server_ip, 'student', 'kamgustudent',
-                  ztweaks.GlobalVars().remote_server_db)
+                       ztweaks.GlobalVars().remote_server_db)
         print('[+] [INFO]	[check_internet_connection] : Success')
         return True
     except:
@@ -242,7 +274,7 @@ def check_on_init():
         return False
 
 
-def check_user_loginpass(login, password):
+def check_user_loginpass(login, password, hashed=False):
     db_ip = ztweaks.GlobalVars().remote_server_ip
     db_name = ztweaks.GlobalVars().remote_server_db
     with RemoteDB(db_ip=db_ip, db_login='guest', db_pass='kamguguest', db_name=db_name) as rserv:
@@ -252,38 +284,104 @@ def check_user_loginpass(login, password):
             hashed_login = hashlib.md5(login.encode('utf-8')).hexdigest()
             hashed_password = hashlib.md5(password.encode('utf-8')).hexdigest()
             # print(hashed_login, hashed_password)
-            res = rserv._cmd_get_one(
-                "SELECT id, type FROM users_login WHERE md5(username)='" + hashed_login + "' AND md5(password)='" + hashed_password + "'")
+            if hashed:
+                res = rserv._cmd_get_one(
+                    """ SELECT id, type FROM users_login
+                        WHERE md5(username)='{login}' AND md5(password)='{password}'""".format(login=login,
+                                                                                               password=password)
+                )
+            else:
+                res = rserv._cmd_get_one(
+                        """ SELECT id, type FROM users_login
+                        WHERE md5(username)='{login}' AND md5(password)='{password}'""".format(login=hashed_login,
+                                                                                               password=hashed_password)
+                )
             if res:
                 hashed_role = hashlib.md5(str(res[1]).encode('utf-8')).hexdigest()
                 # save hash of password in local db
                 # SaveUserToken(hashed_password, hashed_role)
-                return hashed_login, hashed_password
+                return hashed_login, hashed_password, res[0]
         except Exception as ex:
             print('[!] [ERROR]\t[CheckUserLoginPass]', ex)
             return None
 
 
-def DownloadPictureByHTTP(server_ip, server_port='4141', file_name='logo.png'):
-    import urllib3
-    import shutil
-    http = urllib3.PoolManager()
-    url = 'http://' + server_ip + ':' + server_port + '/' + file_name
-    with http.request('GET', url, preload_content=False) as resp, open('./data/pics/' + file_name, 'wb') as out_file:
-        shutil.copyfileobj(resp, out_file)
+def get_user_id_by_user_token():
+    with LocalDB() as ldb:
+        user_hashed = ldb.get_usertoken()[0].split('-')
+        user = check_user_loginpass(user_hashed[0], user_hashed[1], hashed=True)
+        if user:
+            return user[2]
+
+
+def get_remote_userinfo_by_id(user_id):
+    """
+    Function to grab user's info by id in remote database
+    Thx with love to ZedCode by Egorka
+
+    Example:
+        import libs.database as db
+        import libs.ztweaks as zt
+        if zt.checkinternet_and_notify():
+            get_remote_user_info(user_id=1)
+
+    :param user_id: id of user in database
+    :return: user_info<tuple>
+    """
+    db_ip = ztweaks.GlobalVars().remote_server_ip
+    db_name = ztweaks.GlobalVars().remote_server_db
+    with RemoteDB(db_ip=db_ip, db_login='student', db_pass='kamgustudent', db_name=db_name) as rdb:
+        user_info = rdb._cmd_get_one("SELECT * FROM kamgu.users_info WHERE login_id={user_id}".format(user_id=user_id))
+        return user_info[2:]  # [*:] ignoring first not needed remote id's
+
+
+def get_local_user_info():
+    """
+        Function to grab local user's info in remote database
+        Thx with love to ZedCode by Egorka
+
+        Example:
+            import libs.database as db
+            import libs.ztweaks as zt
+            if zt.checkinternet_and_notify():
+                get_local_user_info()
+
+        :return: user_info<tuple>
+        """
+    user_id = get_user_id_by_user_token()
+    return get_remote_userinfo_by_id(user_id)
+
+
+def sync_media_table():
+    """
+    Download and syncing media content table
+
+    :Example:
+        import libs.database as db
+        db.sync_media()
+
+    :return: True/False as success status
+    """
+    def get_media_table_from_remote():
+        """
+        Grab media table from remote
+        :return: [array of media records]
+        """
+        with RemoteDB(db_ip=ztweaks.GlobalVars().remote_server_ip,
+                      db_login='student',
+                      db_pass='kamgustudent',
+                      db_name=ztweaks.GlobalVars().remote_server_db) as rdb:
+            remote_news = rdb._cmd_get_all('SELECT * FROM kamgu.media;')
+            return remote_news
+    try:
+        r_news = get_media_table_from_remote()
+        with LocalDB() as ldb:
+            for new in r_news:
+                ldb.save_local_media_record(new)
+        return True
+    except:
+        return False
 
 
 if __name__ == '__main__':
-    server_ip = ztweaks.GlobalVars.remote_server_ip
-    server_port = ztweaks.GlobalVars().remote_server_http_port  # SERVER PORT BY DEFAULT
-    print(get_remote_news())
-    # print( CheckUserLoginPass('student_fmf', 'password') )
-
-    # DownloadPictureByHTTP(server_ip=server_ip)  # TEST HTTP DOWNLOAD
-    # KamGUServer = RemoteDB(db_ip=server_ip, db_login='student', db_pass='kamgustudent', db_name='kamgu')
-    # print(GetNewsByUser())
-    # local_db = LocalDB()
-    # SaveUserToken('student_fmf', 'password')
-    # SaveUserToken('aa', 'gg')
-    # LoginFunc('student_ffimk', 'password')
-    # print( CheckUserLoginPass('student_fmf', 'password') )
+    pass
