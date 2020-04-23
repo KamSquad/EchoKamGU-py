@@ -4,7 +4,7 @@ by ZeD!
 """
 
 
-def GetRemoteServerCredentials():
+def GetRemoteServerCredentials(pbwrap=None):
     """
     Function to get needed server's info for connection
     :return:
@@ -29,7 +29,7 @@ def GetRemoteServerCredentials():
         configs = ReturnConfigFromPaste(paste=pb_latest_paste)
         return configs  # [ip, db_name, http_port, local_db_name]
     except:
-        return False, False, False, False
+        return False, False, False
 
 
 class GlobalVars:

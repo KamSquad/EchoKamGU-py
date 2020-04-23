@@ -332,7 +332,11 @@ def get_remote_userinfo_by_id(user_id):
     db_name = ztweaks.GlobalVars().remote_server_db
     with RemoteDB(db_ip=db_ip, db_login='student', db_pass='kamgustudent', db_name=db_name) as rdb:
         user_info = rdb._cmd_get_one("SELECT * FROM kamgu.users_info WHERE login_id={user_id}".format(user_id=user_id))
-        return user_info[2:]  # [*:] ignoring first not needed remote id's
+        try:
+            return user_info[2:]  # [*:] ignoring first not needed remote id's
+        except TypeError:
+            print('[!] [ERROR]\t[get_remote_userinfo_by_id]\tUserNotFound')
+            return None
 
 
 def get_local_user_info():

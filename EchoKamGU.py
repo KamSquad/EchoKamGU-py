@@ -3,7 +3,6 @@
 """
 from kivy.uix.screenmanager import ScreenManager
 from kivy.lang import Builder
-from kivy.config import Config
 from kivy.core.window import Window
 from kivy.config import Config
 
@@ -18,7 +17,6 @@ Config.set('graphics', 'resizable', 0)
 Window.clearcolor = (1, 1, 1, 1)
 Window.minimum_height = 500
 Window.minimum_width = 500
-Config.set('graphics', 'resizable', 0)
 Window.fullsize = 'auto'
 Window.release_all_keyboards()
 print(Window.size)
@@ -35,7 +33,6 @@ for kvfile in ['EchoKamGU.kv',
 class MainScreenManager(ScreenManager):
     def __init__(self, localdb, **kwargs):
         super().__init__(**kwargs)
-        # self.current = 'sidebar_screen'
         import libs.database as db
         import libs.ztweaks as ztweaks
 

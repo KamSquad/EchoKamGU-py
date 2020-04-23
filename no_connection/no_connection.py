@@ -11,7 +11,7 @@ from kivy.config import Config
 
 Config.set('kivy', 'keyboard_mode', 'systemanddock')
 
-with open('settings.kv', encoding='utf8') as f:
+with open('no_connection.kv', encoding='utf8') as f:
     Builder.load_string(f.read())
 
 from kivymd.theming import ThemeManager
