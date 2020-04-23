@@ -3,6 +3,7 @@
 """
 from kivy.uix.screenmanager import ScreenManager
 from kivy.lang import Builder
+from kivy.config import Config
 from kivy.core.window import Window
 from kivy.config import Config
 
@@ -11,6 +12,12 @@ from news import news
 from login import login
 from greetings import greetings
 from sidebar_screen import sidebar
+from settings import settings
+from notifications_settings import notifications_settings
+from about import about
+from general import general
+from support import support
+
 
 Config.set('graphics', 'resizable', 0)
 # Set the background color for the window
@@ -25,7 +32,12 @@ for kvfile in ['EchoKamGU.kv',
                'news/news.kv',
                'login/login.kv',
                'greetings/greetings.kv',
-               'sidebar_screen/sidebar.kv']:
+               'sidebar_screen/sidebar.kv',
+               'settings/settings.kv',
+               'notifications_settings/notifications_settings.kv',
+               'about/about.kv',
+               'general/general.kv',
+               'support/support.kv']:
     with open(kvfile, encoding='utf8') as f:
         Builder.load_string(f.read())
 
