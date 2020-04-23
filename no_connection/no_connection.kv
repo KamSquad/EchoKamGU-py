@@ -1,52 +1,108 @@
 #:import MDLabel kivymd.label.MDLabel
-#:import MDTextField kivymd.textfields.MDTextField
-#:import MDRaisedButton kivymd.button.MDRaisedButton
-<ItemLabel@MDLabel>:
-    font_size: '25sp'
-    halign: 'top'
-    valign: 'middle'
-    text_size: self.size
+#:import MDTextFieldRound kivymd.uix.textfield.MDTextFieldRound
+#:import MDRectangleFlatIconButton kivymd.uix.button.MDRectangleFlatIconButton
 
-<Container>:
-    cols: 1
-    padding: 30
-    spacing: 20
+#no_connection-outline
+
+<SettingsScreen>:
 
     FloatLayout:
-        Image:
-            halign: 'top'
-            valign: 'middle'
-            source: 'mylogo.png'
-            size_hint: 0.65, 0.65
-            pos_hint: {'center_x': 0.5, 'center_y': 0.85}
 
-        MDLabel:
-            text_size: '48sp'
-            halign: 'left'
-            valign: 'middle'
-            size: self.texture_size
-            pos_hint: {'center_x': 0.5, 'center_y': 0.6}
-            text: 'Нет подключения к Интернету'
-            font_size: '36sp'
-            bold: True
+        MDToolbar:
+            title: "Настройки"
+            pos_hint: {"top": 1}
+            elevation: 10
+            left_action_items: [['menu', lambda x: root.sidebar.ids.nav_drawer.set_state('toggle')]]
 
-        MDLabel:
-            text_size: self.size
-            halign: 'left'
-            valign: 'middle'
-            size: self.texture_size
-            pos_hint: {'center_x': 0.5, 'center_y': 0.4}
-            text: 'Не удается подключиться к серверу.\nПопробуйте сделать следующее: \n1. Проверьте подключение к Интернету \n2. Проверьте настройки прокси-сервера и брандмауэра'
-            font_size: '18sp'
 
-        Button:
-            pos_hint: {'center_x': 0.5, 'center_y': 0.15}
-            size_hint: 0.6, 0.1
-            text: 'Обновить'
-            font_size: '30sp'
-
+        # 2
+        # notifications & pic
+        # >>>
+        MDRectangleFlatIconButton:
+            icon: "android-messages"
+            text: "Уведомления"
+            font_size: '26sp'
+            text_color: 0, 0, 0, 1
+            width: dp(280)
+            pos_hint: {'center_x': 0.5, 'center_y' : 0.8}
+            size_hint: 1, 0.1
             on_release:
-                self.text = '...'
+                root.sidebar.ids.sidebar_manager.current = 'notifications_screen'
+
+        # <<<
+
+
+
+        # 3
+        # generals & pic
+        # >>>
+        MDRectangleFlatIconButton:
+            icon: "settings"
+            text: "Настройки"
+            font_size: '26sp'
+            text_color: 0, 0, 0, 1
+            width: dp(280)
+            pos_hint: {'center_x': 0.5, 'center_y' : 0.7}
+            size_hint: 1, 0.1
+        # <<<
+
+
+        # 4
+        # info & pic
+        # >>>
+        MDRectangleFlatIconButton:
+            icon: "information"
+            text: "Информация"
+            font_size: '26sp'
+            text_color: 0, 0, 0, 1
+            width: dp(280)
+            pos_hint: {'center_x': 0.5, 'center_y' : 0.6}
+            size_hint: 1, 0.1
+
+        # <<<
+
+
+        # 5
+        # support & pic
+        # >>>
+        MDRectangleFlatIconButton:
+            icon: "headset"
+            text: "Тех. поддержка"
+            font_size: '26sp'
+            text_color: 0, 0, 0, 1
+            width: dp(280)
+            pos_hint: {'center_x': 0.5, 'center_y' : 0.5}
+            size_hint: 1, 0.1
+        # <<<
+
+        # 6
+        # kamgu pic & label
+        # >>>
+        Image:
+            source: 'data/pics/kamgu_logo.png'
+            size_hint: 0.5, 0.5
+            pos_hint: {'center_x': 0.5, 'center_y': 0.25}
+
+
+        MDLabel:
+
+            text_size: '48sp'
+            size_hint: 0.8, 0.5
+            pos_hint: {'center_x': 0.75, 'center_y': 0.07}
+            text: 'by KamGU SQuad'
+            font_size: '16sp'
+            bold: True
+            italic: True
+
+        # <<<
+
+
+
+
+
+
+
+
 
 
 
