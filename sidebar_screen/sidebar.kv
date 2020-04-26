@@ -45,6 +45,13 @@
             root.sidebar_manager.current = "news"
             root.sidebar.ids.nav_drawer.set_state("close")
 
+    ItemDrawer:
+        text: "Настройки"
+        icon: "settings"
+        on_press:
+            root.sidebar_manager.current = "settings_screen"
+            root.sidebar.ids.nav_drawer.set_state("close")
+
 
 <ContentNavigationDrawer>:
     orientation: "vertical"
