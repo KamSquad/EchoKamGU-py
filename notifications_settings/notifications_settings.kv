@@ -8,6 +8,12 @@
 <NotificationsScreen>:
 
     FloatLayout:
+        canvas.before:
+            Color:
+                rgba: 1, 1, 1, 1
+            Rectangle:
+                pos: self.pos
+                size: self.size
 
         MDToolbar:
             title: "Уведомления"
@@ -118,3 +124,10 @@
             text_color: 0, 0, 0, 1
             pos_hint: {'center_x': .5, 'center_y': .13}
             size_hint: 1, 0.045
+
+
+        MDRaisedButton:
+            text: 'Назад'
+            on_press:
+                root.sidebar.ids.sidebar_manager.current = 'settings_screen'
+                root.sidebar.ids.toolbar.title = 'Настройки'

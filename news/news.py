@@ -36,7 +36,7 @@ class NewsCard(MDCard):
 
         self.title = title_text
         self.short_text = short_text
-        #print(full_text.split('\n'))
+        # print(title_text)
         self.full_text = ''.join('      {}\n'.format(x) for x in full_text.split('\n\n'))
         self.image_path = image_text
         self.popup = NewsPopup(self.title, self.full_text)

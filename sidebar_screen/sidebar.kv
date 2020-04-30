@@ -43,6 +43,7 @@
         icon: "newspaper-variant-outline"
         on_press:
             root.sidebar_manager.current = "news"
+            root.sidebar.ids.toolbar.title = "Новости"
             root.sidebar.ids.nav_drawer.set_state("close")
 
     ItemDrawer:
@@ -50,6 +51,7 @@
         icon: "settings"
         on_press:
             root.sidebar_manager.current = "settings_screen"
+            root.sidebar.ids.toolbar.title = "Настройки"
             root.sidebar.ids.nav_drawer.set_state("close")
 
 
@@ -80,20 +82,15 @@
     main_manager: None
     sidebar_manager: sidebar_manager
 
-    BoxLayout:
-        orientation: 'vertical'
-
-        MDToolbar:
-            id: toolbar
-            title: 'Новости'
-            pos_hint: {"top": 1}
-            elevation: 10
-            left_action_items: [['menu', lambda x: root.ids.nav_drawer.set_state('toggle')]]
+    FloatLayout:
+        #orientation: 'vertical'
 
         NavigationLayout:
+            pos_hint: {'top': 0.9, 'right': .5}
 
             ScreenManager:
                 id: sidebar_manager
+                transition: FadeTransition()
 
                 NewsScreen:
                     name: 'news'
@@ -128,9 +125,17 @@
 
             MDNavigationDrawer:
                 id: nav_drawer
+                pos_hint: {'top': 1}
 
                 ContentNavigationDrawer:
                     id: content_drawer
                     sidebar: root
                     main_manager: root.main_manager
                     sidebar_manager: root.sidebar_manager
+
+        MDToolbar:
+            id: toolbar
+            title: 'Новости'
+            pos_hint: {"top": 1}
+            elevation: 10
+            left_action_items: [['menu', lambda x: root.ids.nav_drawer.set_state('toggle')]]

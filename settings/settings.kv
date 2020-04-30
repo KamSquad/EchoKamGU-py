@@ -5,8 +5,15 @@
 #no_connection-outline
 
 <SettingsScreen>:
+    sidebar: None
 
     FloatLayout:
+        canvas.before:
+            Color:
+                rgba: 1, 1, 1, 1
+            Rectangle:
+                pos: self.pos
+                size: self.size
 
         MDToolbar:
             title: "Настройки"
@@ -28,6 +35,7 @@
             size_hint: 1, 0.1
             on_release:
                 root.sidebar.ids.sidebar_manager.current = 'notifications_screen'
+                root.sidebar.ids.toolbar.title = "Уведомления"
 
         # <<<
 
@@ -44,6 +52,9 @@
             width: dp(280)
             pos_hint: {'center_x': 0.5, 'center_y' : 0.7}
             size_hint: 1, 0.1
+            on_release:
+                root.sidebar.ids.sidebar_manager.current = 'general_screen'
+                root.sidebar.ids.toolbar.title = "Настройки"
         # <<<
 
 
@@ -58,6 +69,9 @@
             width: dp(280)
             pos_hint: {'center_x': 0.5, 'center_y' : 0.6}
             size_hint: 1, 0.1
+            on_release:
+                root.sidebar.ids.sidebar_manager.current = 'about_screen'
+                root.sidebar.ids.toolbar.title = "Информация"
 
         # <<<
 
@@ -73,6 +87,9 @@
             width: dp(280)
             pos_hint: {'center_x': 0.5, 'center_y' : 0.5}
             size_hint: 1, 0.1
+            on_release:
+                root.sidebar.ids.sidebar_manager.current = 'support_screen'
+                root.sidebar.ids.toolbar.title = "Тех. поддержка"
         # <<<
 
         # 6
@@ -94,7 +111,7 @@
             bold: True
             italic: True
 
-        # <<<
+
 
 
 

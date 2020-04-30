@@ -7,11 +7,18 @@
     FloatLayout:
         size_hint: 1, 1
         pos_hint: {'center_x': 0.5, 'center_y': 0.5}
+        canvas.before:
+            Color:
+                rgba: 1, 1, 1, 1
+            Rectangle:
+                pos: self.pos
+                size: self.size
 
         Image:
             source: 'data/pics/cake.png'
             size_hint: 1, 1
             pos_hint: {'center_x': 0.5, 'center_y': 0.4}
+
         VersionPlaque:
             id: version_plaque
             pos_hint: {'center_x': 0.5,'center_y': 0.8}
@@ -34,6 +41,13 @@
             width: dp(280)
             pos_hint: {'center_x': 0.5, 'center_y' : 0.12}
             size_hint: 0.7, 0.06
+
+
+        MDRaisedButton:
+            text: 'Назад'
+            on_press:
+                root.sidebar.ids.sidebar_manager.current = 'settings_screen'
+                root.sidebar.ids.toolbar.title = 'Настройки'
 
 
 <VersionPlaque@BoxLayout>
@@ -76,6 +90,4 @@
     MDSeparator:
         height: 1
         color: 0, 0, 0, 1
-
-
 

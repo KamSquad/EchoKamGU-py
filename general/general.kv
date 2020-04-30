@@ -7,6 +7,12 @@
     FloatLayout:
         size_hint: 1, 1
         pos_hint: {'center_x': 0.5, 'center_y': 0.5}
+        canvas.before:
+            Color:
+                rgba: 1, 1, 1, 1
+            Rectangle:
+                pos: self.pos
+                size: self.size
 
         MDRectangleFlatIconButton:
             icon: "tooltip-text"
@@ -45,4 +51,10 @@
             size: "48dp", "48dp"
             pos_hint: {'center_x': .87, 'center_y': .6}
 
+
+        MDRaisedButton:
+            text: 'Назад'
+            on_press:
+                root.sidebar.ids.sidebar_manager.current = 'settings_screen'
+                root.sidebar.ids.toolbar.title = 'Настройки'
 

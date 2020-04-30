@@ -13,6 +13,12 @@
     sidebar: None
 
     BoxLayout:
+        canvas.before:
+            Color:
+                rgba: 1, 1, 1, 1
+            Rectangle:
+                pos: self.pos
+                size: self.size
         orientation: "vertical"
         spacing: "10dp"
         padding: [10, 0, 10, 0]
