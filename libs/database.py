@@ -240,7 +240,7 @@ def check_usertoken():
                           db_pass='kamgustudent', db_name=ztweaks.GlobalVars().remote_server_db) as rdb:
                 return rdb._cmd_get_one(
                     """ SELECT id, type FROM users_login
-                        WHERE md5(username)='{llogin}' AND md5(password)='{lpass}'""".format(llogin=login_hash,
+                        WHERE md5(username)='{llogin}' AND password='{lpass}'""".format(llogin=login_hash,
                                                                                              lpass=pass_hash)
                 )
         else:
