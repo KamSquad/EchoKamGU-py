@@ -279,31 +279,31 @@ def check_user_loginpass(login, password, hashed=False):
     db_name = ztweaks.GlobalVars().remote_server_db
     with RemoteDB(db_ip=db_ip, db_login='guest', db_pass='kamguguest', db_name=db_name) as rserv:
         try:
-            # hash_pass = ''
-            import hashlib
-            hashed_login = hashlib.md5(login.encode('utf-8')).hexdigest()
-            hashed_password = hashlib.md5(password.encode('utf-8')).hexdigest()
-            # print(hashed_login, hashed_password)
             if hashed:
                 res = rserv._cmd_get_one(
                     """ SELECT id, type FROM users_login
-                        WHERE md5(username)='{login}' AND md5(password)='{password}'""".format(login=login,
-                                                                                               password=password)
+                        WHERE md5(username)='{login}' AND password='{password}'""".format(login=login,
+                                                                                          password=password)
                 )
             else:
+                import hashlib
+                hashed_login = hashlib.md5(login.encode('utf-8')).hexdigest()
+                hashed_password = hashlib.md5(password.encode('utf-8')).hexdigest()
+                # print(hashed_login, hashed_password)
                 res = rserv._cmd_get_one(
-                        """ SELECT id, type FROM users_login
-                        WHERE md5(username)='{login}' AND md5(password)='{password}'""".format(login=hashed_login,
-                                                                                               password=hashed_password)
+                    """ SELECT id, type FROM users_login
+                    WHERE md5(username)='{login}' AND password='{password}'""".format(login=hashed_login,
+                                                                                      password=hashed_password)
                 )
             if res:
+                role = res[1]
                 hashed_role = hashlib.md5(str(res[1]).encode('utf-8')).hexdigest()
                 # save hash of password in local db
                 # SaveUserToken(hashed_password, hashed_role)
-                return hashed_login, hashed_password, res[0]
+                return hashed_login, hashed_password, role
         except Exception as ex:
             print('[!] [ERROR]\t[CheckUserLoginPass]', ex)
-            return None
+            return
 
 
 def get_user_id_by_user_token():
