@@ -8,15 +8,16 @@ from kivy.core.window import Window
 from kivy.config import Config
 
 from app import MDApp
-from news import news
-from login import login
-from greetings import greetings
-from sidebar_screen import sidebar
-from settings import settings
-from notifications_settings import notifications_settings
-from about import about
-from general import general
-from support import support
+
+from main_manager.greetings import greetings
+from main_manager.login import login
+from main_manager.sidebar_screen import sidebar
+from main_manager.sidebar_screen.news import news
+from main_manager.sidebar_screen.settings import settings
+from main_manager.sidebar_screen.notifications_settings import notifications_settings
+from main_manager.sidebar_screen.about import about
+from main_manager.sidebar_screen.general import general
+from main_manager.sidebar_screen.support import support
 
 
 Config.set('graphics', 'resizable', 0)
@@ -29,15 +30,15 @@ Window.release_all_keyboards()
 print(Window.size)
 
 for kvfile in ['EchoKamGU.kv',
-               'news/news.kv',
-               'login/login.kv',
-               'greetings/greetings.kv',
-               'sidebar_screen/sidebar.kv',
-               'settings/settings.kv',
-               'notifications_settings/notifications_settings.kv',
-               'about/about.kv',
-               'general/general.kv',
-               'support/support.kv']:
+               'main_manager/sidebar_screen/news/news.kv',
+               'main_manager/login/login.kv',
+               'main_manager/greetings/greetings.kv',
+               'main_manager/sidebar_screen/sidebar.kv',
+               'main_manager/sidebar_screen/settings/settings.kv',
+               'main_manager/sidebar_screen/notifications_settings/notifications_settings.kv',
+               'main_manager/sidebar_screen/about/about.kv',
+               'main_manager/sidebar_screen/general/general.kv',
+               'main_manager/sidebar_screen/support/support.kv']:
     with open(kvfile, encoding='utf8') as f:
         Builder.load_string(f.read())
 
