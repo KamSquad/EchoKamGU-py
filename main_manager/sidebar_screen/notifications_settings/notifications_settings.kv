@@ -1,0 +1,127 @@
+#:import MDLabel kivymd.uix.label
+#:import MDTextFieldRound kivymd.uix.textfield.MDTextFieldRound
+#:import MDRectangleFlatIconButton kivymd.uix.button.MDRectangleFlatIconButton
+#import MDToolbar kivymd.uix.toolbar.MDToolbar
+
+
+
+<NotificationsScreen>:
+
+    FloatLayout:
+        canvas.before:
+            Color:
+                rgba: 1, 1, 1, 1
+            Rectangle:
+                pos: self.pos
+                size: self.size
+
+
+        #messages
+        MDLabel:
+            text: "Уведомления о сообщениях"
+            font_size: '20sp'
+            bold: True
+            pos_hint: {'center_x': 0.5, 'y': 0.73}
+            size_hint: 1, None
+            halign: "center"
+            valign: "top"
+
+        MDLabel:
+            text: "Показывать уведомления"
+            size_hint: 1, None
+            font_size: '20sp'
+            halign: "center"
+            valign: "top"
+            bold: False
+            pos_hint: {'center_x': 0.3, 'y': 0.645}
+
+        MDSwitch:
+            size_hint: None, None
+            size: "48dp", "48dp"
+            pos_hint: {'center_x': .87, 'center_y': .7}
+
+        MDRectangleFlatIconButton:
+            icon: "pencil-outline"
+            text: "Звук"
+            width: dp(280)
+            font_size: '20sp'
+            text_color: 0, 0, 0, 1
+            pos_hint: {'center_x': .5, 'center_y': .65}
+            size_hint: 1, 0.045
+
+
+
+        #news
+        MDLabel:
+            text: "Уведомления о новостях"
+            size_hint: 1, None
+            font_size: '20sp'
+            halign: "center"
+            valign: "top"
+            bold: True
+            pos_hint: {'center_x': 0.5, 'y': 0.45}
+
+        MDLabel:
+            text: "Показывать уведомления"
+            size_hint: 1, None
+            font_size: '20sp'
+            halign: "center"
+            valign: "top"
+            bold: False
+            pos_hint: {'center_x': 0.3, 'y': 0.37}
+
+        MDSwitch:
+            size_hint: None, None
+            size: "48dp", "48dp"
+            pos_hint: {'center_x': .87, 'center_y': .43}
+
+        MDRectangleFlatIconButton:
+            icon: "pencil-outline"
+            text: "Звук"
+            width: dp(280)
+            font_size: '20sp'
+            text_color: 0, 0, 0, 1
+            pos_hint: {'center_x': .5, 'center_y': .38}
+            size_hint: 1, 0.045
+
+
+        #3 preview
+
+        MDLabel:
+            text: "Вид уведомлений"
+            size_hint: 1, None
+            font_size: '20sp'
+            halign: "center"
+            valign: "top"
+            bold: True
+            pos_hint: {'center_x': 0.5, 'y': 0.2}
+
+        MDLabel:
+            text: "Предпросмотр"
+            size_hint: 1, None
+            font_size: '20sp'
+            halign: "center"
+            valign: "top"
+            bold: False
+            pos_hint: {'center_x': 0.2, 'y': 0.12}
+
+        MDSwitch:
+            size_hint: None, None
+            size: "48dp", "48dp"
+            pos_hint: {'center_x': .87, 'center_y': .185}
+
+        MDRectangleFlatIconButton:
+            icon: "pencil-outline"
+            text: "Баннеры, звуки, вибрация"
+            width: dp(280)
+            font_size: '20sp'
+            text_color: 0, 0, 0, 1
+            pos_hint: {'center_x': .5, 'center_y': .13}
+            size_hint: 1, 0.045
+
+
+        MDRaisedButton:
+            text: 'Назад'
+            on_press:
+                root.sidebar.ids.sidebar_manager.current = 'settings_screen'
+                root.sidebar.ids.toolbar.title = 'Настройки'

@@ -1,0 +1,142 @@
+#:import MDNavigationDrawer kivymd.uix.navigationdrawer
+#:import MDList kivymd.uix.list
+#:import MDLabel kivymd.uix.label
+#:import MDSeparator kivymd.uix.card
+#:import MDTextButton kivymd.uix.button
+#:import MDRaisedButton kivymd.uix.button
+#:import MDRoundFlatButton kivymd.uix.button
+#:import MDDialog kivymd.uix.dialog
+#:import Popup kivy.uix.popup
+
+
+<ItemDrawer>:
+    theme_text_color: "Custom"
+
+    IconLeftWidget:
+        id: icon
+        icon: root.icon
+        theme_text_color: "Custom"
+        text_color: root.text_color
+
+
+<DrawerList>:
+    main_manager: None
+    sidebar_manager: None
+    sidebar: None
+
+    ItemDrawer:
+        text: "greetings"
+        icon: "human-greeting"
+        on_press:
+            root.main_manager.current = "greetings"
+            root.sidebar.ids.nav_drawer.set_state("close")
+
+    ItemDrawer:
+        text: "login"
+        icon: "login"
+        on_press:
+            root.main_manager.current = "login"
+            root.sidebar.ids.nav_drawer.set_state("close")
+
+    ItemDrawer:
+        text: "news"
+        icon: "newspaper-variant-outline"
+        on_press:
+            root.sidebar_manager.current = "news"
+            root.sidebar.ids.toolbar.title = "Новости"
+            root.sidebar.ids.nav_drawer.set_state("close")
+
+    ItemDrawer:
+        text: "Настройки"
+        icon: "settings"
+        on_press:
+            root.sidebar_manager.current = "settings_screen"
+            root.sidebar.ids.toolbar.title = "Настройки"
+            root.sidebar.ids.nav_drawer.set_state("close")
+
+
+<ContentNavigationDrawer>:
+    orientation: "vertical"
+    padding: "8dp"
+    spacing: "8dp"
+    sidebar: None
+    main_manager: None
+    sidebar_manager: None
+
+    MDLabel:
+        text: "EchoKamGU"
+        font_style: "Button"
+        size_hint_y: None
+        height: self.texture_size[1]
+
+    ScrollView:
+
+        DrawerList:
+            id: md_list
+            sidebar: root.sidebar
+            main_manager: root.main_manager
+            sidebar_manager: root.sidebar_manager
+
+
+<SidebarScreen>
+    main_manager: None
+    sidebar_manager: sidebar_manager
+
+    FloatLayout:
+        #orientation: 'vertical'
+
+        NavigationLayout:
+
+            ScreenManager:
+                id: sidebar_manager
+                transition: FadeTransition()
+                pos_hint: {'top': 0.9}
+                size_hint_y: 0.9
+
+                NewsScreen:
+                    name: 'news'
+                    title_toolbar: 'Новости'
+                    sidebar: root
+
+                AboutScreen:
+                    name: 'about_screen'
+                    sidebar: root
+
+                SupportScreen:
+                    name: 'support_screen'
+                    sidebar: root
+
+                GeneralScreen:
+                    name: 'general_screen'
+                    sidebar: root
+
+                SettingsScreen:
+                    name: 'settings_screen'
+                    sidebar: root
+
+                NotificationsScreen:
+                    name: 'notifications_screen'
+                    sidebar: root
+
+                ArticleScreen:
+                    id: article
+                    name: 'article'
+                    title_toolbar: ''
+                    sidebar: root
+
+            MDNavigationDrawer:
+                id: nav_drawer
+                pos_hint: {'top': .9}
+
+                ContentNavigationDrawer:
+                    id: content_drawer
+                    sidebar: root
+                    main_manager: root.main_manager
+                    sidebar_manager: root.sidebar_manager
+
+        MDToolbar:
+            id: toolbar
+            title: 'Новости'
+            pos_hint: {"top": 1}
+            elevation: 10
+            left_action_items: [['menu', lambda x: root.ids.nav_drawer.set_state('toggle')]]

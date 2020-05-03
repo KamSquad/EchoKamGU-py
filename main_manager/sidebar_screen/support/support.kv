@@ -1,0 +1,43 @@
+#:import MDLabel kivymd.uix.label
+#:import MDTextFieldRound kivymd.uix.textfield.MDTextFieldRound
+#:import MDRectangleFlatIconButton kivymd.uix.button.MDRectangleFlatIconButton
+
+<SupportScreen>:
+
+    FloatLayout:
+        size_hint: 1, 1
+        pos_hint: {'center_x': 0.5, 'center_y': 0.5}
+        canvas.before:
+            Color:
+                rgba: 1, 1, 1, 1
+            Rectangle:
+                pos: self.pos
+                size: self.size
+
+        Image:
+            source: 'data/pics/support.png'
+            size_hint: 0.7, 0.7
+            pos_hint: {'center_x': 0.5, 'center_y': 0.7}
+
+        MDLabel:
+            text: "    Вы можете связаться с технической поддержкой по адресу электронной почты, указанному ниже"
+            size_hint: 0.9, 0.5
+            pos_hint: {'center_x': 0.5, 'center_y': 0.4}
+            font_size: '20sp'
+            italic: True
+
+        MDRectangleFlatIconButton:
+            icon: 'email'
+            text: "ЗДЕСЬ МОГЛА БЫ БЫТЬ ВАША РЕКЛАМА"
+            font_size: '18sp'
+            text_color: 0, 0, 0, 0.5
+            width: dp(280)
+            pos_hint: {'center_x': 0.5, 'center_y' : 0.2}
+            size_hint: 1, 0.075
+
+
+        MDRaisedButton:
+            text: 'Назад'
+            on_press:
+                root.sidebar.ids.sidebar_manager.current = 'settings_screen'
+                root.sidebar.ids.toolbar.title = 'Настройки'

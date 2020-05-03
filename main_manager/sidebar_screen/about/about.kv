@@ -1,0 +1,93 @@
+#:import MDLabel kivymd.uix.label
+#:import MDTextFieldRound kivymd.uix.textfield.MDTextFieldRound
+#:import MDRectangleFlatIconButton kivymd.uix.button.MDRectangleFlatIconButton
+
+<AboutScreen>:
+
+    FloatLayout:
+        size_hint: 1, 1
+        pos_hint: {'center_x': 0.5, 'center_y': 0.5}
+        canvas.before:
+            Color:
+                rgba: 1, 1, 1, 1
+            Rectangle:
+                pos: self.pos
+                size: self.size
+
+        Image:
+            source: 'data/pics/cake.png'
+            size_hint: 1, 1
+            pos_hint: {'center_x': 0.5, 'center_y': 0.4}
+
+        VersionPlaque:
+            id: version_plaque
+            pos_hint: {'center_x': 0.5,'center_y': 0.8}
+
+        MDRectangleFlatIconButton:
+            icon: "star"
+            text: "Оценить"
+            font_size: '20sp'
+            text_color: 0, 0, 0, 1
+            width: dp(280)
+            pos_hint: {'center_x': 0.5, 'center_y' : 0.2}
+            size_hint: 0.7, 0.06
+
+        MDRectangleFlatIconButton:
+            icon: "file-document"
+            text: "Правила пользования приложением"
+            font_size: '15sp'
+            multiline: True
+            text_color: 0, 0, 0, 1
+            width: dp(280)
+            pos_hint: {'center_x': 0.5, 'center_y' : 0.12}
+            size_hint: 0.7, 0.06
+
+
+        MDRaisedButton:
+            text: 'Назад'
+            on_press:
+                root.sidebar.ids.sidebar_manager.current = 'settings_screen'
+                root.sidebar.ids.toolbar.title = 'Настройки'
+
+
+<VersionPlaque@BoxLayout>
+    canvas.before:
+        Color:
+            rgba: 1, 1, 1, 0
+        Rectangle:
+            pos: self.pos
+            size: self.size
+    orientation: 'vertical'
+    border: 10
+    size_hint_y: None
+    height: self.ids.label.height + 20
+
+    MDSeparator:
+        height: 1
+        color: 0, 0, 0, 1
+
+    BoxLayout:
+        padding: 0, 10, 0, 10
+
+        MDLabel:
+            id: label
+            valign: 'top'
+            halign: 'left'
+            padding: 10, 5
+            text: 'Версия'
+            size_hint: 1, None
+            size: self.texture_size
+            font_size: '20sp'
+        MDLabel:
+            id: label_version
+            valign: 'top'
+            halign: 'right'
+            padding: 10, 5
+            text: 'Номер версии'
+            size_hint: 1, None
+            size: self.texture_size
+            font_size: '20sp'
+    MDSeparator:
+        height: 1
+        color: 0, 0, 0, 1
+
