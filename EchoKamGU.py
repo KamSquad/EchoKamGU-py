@@ -11,6 +11,13 @@ from app import MDApp
 
 
 def config():
+    """
+    Window configuration, that hopefully works.
+    Half of it doesn't work.
+    Probably.
+
+    :return: Sufferings
+    """
     Config.set('graphics', 'resizable', 0)
     # Set the background color for the window
     Window.clearcolor = (1, 1, 1, 1)
@@ -22,6 +29,11 @@ def config():
 
 
 def load_files():
+    """
+    Load all our modules and their respectable .kv files.
+
+    :return: None
+    """
 
     from main_manager.greetings import greetings
     from main_manager.login import login
@@ -48,7 +60,19 @@ def load_files():
 
 
 class MainScreenManager(ScreenManager):
+    """
+    Top-level screen manager for the app.
+    """
+
+    # TODO: add first_screen(name pending) internal function
     def __init__(self, localdb, **kwargs):
+        """
+        Initialization of ScreenManager AND determining of the first screen.
+        Probably needs to be split into 2 functions.
+
+        :param localdb: client's local database object
+        :param kwargs: something internal for kivy
+        """
         super().__init__(**kwargs)
         import libs.database as db
         import libs.ztweaks as ztweaks
@@ -69,6 +93,12 @@ class MainScreenManager(ScreenManager):
 
 
 class EchoKamGUApp(MDApp):
+    """
+    App class.
+
+    Determines starter palette and app icon.
+    Initializes local database.
+    """
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         self.theme_cls.primary_palette = "Green"

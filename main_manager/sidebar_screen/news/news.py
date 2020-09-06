@@ -13,6 +13,8 @@ from kivymd.uix.button import MDRaisedButton
 from libs import database
 from os.path import exists
 
+NEWS_CHECK = False
+
 
 def text_height(text, win_width):
     label = MDLabel(text=text)
@@ -30,6 +32,7 @@ class NewsPopup(Popup):
 
 
 class NewsCard(MDCard):
+    # TODO: split initialization into multiple functions.
     def __init__(self, short_text="", title_text="", image_path="", full_text="", sidebar=None):
         super().__init__()
 
@@ -137,13 +140,25 @@ class NewsScreen(Screen):
     def on_enter(self):
         Clock.schedule_once(self.add_news)
 
+    # TODO: it tries to run twice and self.added not helping.
+    #  global variable check works, but i don't like that.
+    #  there needs to be a better solution
     def add_news(self, *args):
+        """
+        Adding news cards to news list.
 
-        if self.added:
+        Must be run once(on enter), but tries to run twice.
+
+        :param args: something clock-related? maybe
+        :return: None
+        """
+        global NEWS_CHECK
+        if self.added or NEWS_CHECK:
             return None
 
         # print('add_news', id(self))
         self.added = True
+        NEWS_CHECK = True
 
         self.news_grid = self.ids.news_grid
         self.news_list = self._get_news()
