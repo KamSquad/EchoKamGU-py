@@ -30,7 +30,7 @@ class NewsPopup(Popup):
 
 
 class NewsCard(MDCard):
-    def __init__(self, short_text="", title_text="", image_text="", full_text="", sidebar=None):
+    def __init__(self, short_text="", title_text="", image_path="", full_text="", sidebar=None):
         super().__init__()
 
         self.sidebar = sidebar
@@ -39,7 +39,7 @@ class NewsCard(MDCard):
         self.short_text = short_text
         # print(title_text)
         self.full_text = ''.join('      {}\n'.format(x) for x in full_text.split('\n\n'))
-        self.image_path = image_text
+        self.image_path = image_path
         self.popup = NewsPopup(self.title, self.full_text)
 
         title = self.ids.news_title
@@ -53,7 +53,7 @@ class NewsCard(MDCard):
         # print(text.height, end=' ')
 
         self.image = self.ids.news_image
-        if image_text != 'default' and exists(self.image_path):
+        if self.image_path != 'default' and exists(self.image_path):
             self.image.source = self.image_path
             self.image.size = self.image.texture_size
             self.image.height = min(self.image.size[1], Window.height / 2)
@@ -153,7 +153,7 @@ class NewsScreen(Screen):
                 self.news_grid.add_widget(NewsCard(title_text=entry[0],
                                                    short_text=entry[1],
                                                    full_text=entry[2],
-                                                   image_text=entry[3],
+                                                   image_path=entry[3],
                                                    sidebar=self.sidebar))
         else:
             for _ in range(10):

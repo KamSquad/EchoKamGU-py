@@ -9,38 +9,42 @@ from kivy.config import Config
 
 from app import MDApp
 
-from main_manager.greetings import greetings
-from main_manager.login import login
-from main_manager.sidebar_screen import sidebar
-from main_manager.sidebar_screen.news import news
-from main_manager.sidebar_screen.settings import settings
-from main_manager.sidebar_screen.notifications_settings import notifications_settings
-from main_manager.sidebar_screen.about import about
-from main_manager.sidebar_screen.general import general
-from main_manager.sidebar_screen.support import support
+
+def config():
+    Config.set('graphics', 'resizable', 0)
+    # Set the background color for the window
+    Window.clearcolor = (1, 1, 1, 1)
+    Window.minimum_height = 500
+    Window.minimum_width = 500
+    Window.fullsize = 'auto'
+    Window.release_all_keyboards()
+    print(Window.size)
 
 
-Config.set('graphics', 'resizable', 0)
-# Set the background color for the window
-Window.clearcolor = (1, 1, 1, 1)
-Window.minimum_height = 500
-Window.minimum_width = 500
-Window.fullsize = 'auto'
-Window.release_all_keyboards()
-print(Window.size)
+def load_files():
 
-for kvfile in ['EchoKamGU.kv',
-               'main_manager/sidebar_screen/news/news.kv',
-               'main_manager/login/login.kv',
-               'main_manager/greetings/greetings.kv',
-               'main_manager/sidebar_screen/sidebar.kv',
-               'main_manager/sidebar_screen/settings/settings.kv',
-               'main_manager/sidebar_screen/notifications_settings/notifications_settings.kv',
-               'main_manager/sidebar_screen/about/about.kv',
-               'main_manager/sidebar_screen/general/general.kv',
-               'main_manager/sidebar_screen/support/support.kv']:
-    with open(kvfile, encoding='utf8') as f:
-        Builder.load_string(f.read())
+    from main_manager.greetings import greetings
+    from main_manager.login import login
+    from main_manager.sidebar_screen import sidebar
+    from main_manager.sidebar_screen.news import news
+    from main_manager.sidebar_screen.settings import settings
+    from main_manager.sidebar_screen.notifications_settings import notifications_settings
+    from main_manager.sidebar_screen.about import about
+    from main_manager.sidebar_screen.general import general
+    from main_manager.sidebar_screen.support import support
+
+    for kvfile in ['EchoKamGU.kv',
+                   'main_manager/sidebar_screen/news/news.kv',
+                   'main_manager/login/login.kv',
+                   'main_manager/greetings/greetings.kv',
+                   'main_manager/sidebar_screen/sidebar.kv',
+                   'main_manager/sidebar_screen/settings/settings.kv',
+                   'main_manager/sidebar_screen/notifications_settings/notifications_settings.kv',
+                   'main_manager/sidebar_screen/about/about.kv',
+                   'main_manager/sidebar_screen/general/general.kv',
+                   'main_manager/sidebar_screen/support/support.kv']:
+        with open(kvfile, encoding='utf8') as f:
+            Builder.load_string(f.read())
 
 
 class MainScreenManager(ScreenManager):
@@ -81,4 +85,6 @@ class EchoKamGUApp(MDApp):
         return MainScreenManager(localdb)
 
 
+config()
+load_files()
 EchoKamGUApp().run()

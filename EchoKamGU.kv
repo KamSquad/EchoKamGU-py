@@ -1,19 +1,16 @@
 #:import FadeTransition kivy.uix.screenmanager.FadeTransition
 
-<MainScreenManager@ScreenManager>
+<MainScreenManager>
     transition: FadeTransition()
 
-    Screen:
+    GreetingsScreen:
         name: "greetings"
-        GreetingsScreen:
-            main_manager: root
+        main_manager: root
 
-    Screen:
+    LogInScreen:
         name: "login"
-        LogInScreen:
-            main_manager: root
+        main_manager: root
 
-    Screen:
+    SidebarScreen:
         name: "sidebar_screen"
-        SidebarScreen:
-            main_manager: root
+        main_manager: root
